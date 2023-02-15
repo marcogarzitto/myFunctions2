@@ -2,12 +2,12 @@
 #'
 #' Function to save a data-frame in 'xlsx' and/or 'RData' and/or 'csv'. Using: 'xlsx' package.
 #'
-#' @param what .
+#' @param what Data-frame to be saved. Data-frame. Default: None.
 #' @param file_name Name by which the file will be saved. String. Default: 'DF'.
 #' @param where Destination folder. String. Default: current folder (with 'getwd()').
-#' @param row_names Use of row names. Bolean. Default: FALSE.
-#' @param with_rdata Save as 'RData'. Bolean. Default: TRUE.
-#' @param with_csv Save as 'csv' (both standard and Italian-version 'csv' are saved). Bolean. Default: FALSE.
+#' @param row_names Use of row names. Boolean. Default: FALSE.
+#' @param with_rdata Save as 'RData'. Boolean. Default: TRUE.
+#' @param with_csv Save as 'csv' (both standard and Italian-version 'csv' are saved). Boolean. Default: FALSE.
 #' @param fileEncoding File encoding. String. Default: 'latin1'.
 #' @return Nothing.
 #' @export

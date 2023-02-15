@@ -2,8 +2,8 @@
 #'
 #' Function to obtain the confidence interval of the mean. Using: 'psych' package.
 #'
-#' @param x Numeric vector.
-#' @param confidence Confidence interval desired. Numeric. Default: 0.950.
+#' @param x Numeric vector. Default: None.
+#' @param confidence Confidence interval desired. Numeric value. Default: 0.950.
 #' @param distribution z-distributionn or t-distribution. For small or poorly distributed samples, use t-distribution. String. Default: 'z'.
 #' @return A vector: c(y, ymin, ymax).
 #' @export
