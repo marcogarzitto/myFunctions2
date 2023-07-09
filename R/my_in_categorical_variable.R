@@ -1,6 +1,6 @@
 #' my_in_categorical_variable
 #'
-#' Function to insert a categorical variable, creating dummy variables (one for each level).
+#' Function to insert a categorical variable from a data-frame, creating dummy variables (one for each level).
 #'
 #' @param name_in Name of the variable in the input data.frame. String. Default: None.
 #' @param df_in Input data.frame (with the 'name_in' variable). Data.frame. Default: IN.

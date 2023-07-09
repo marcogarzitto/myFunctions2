@@ -30,5 +30,5 @@ my_in_categorical_variable(
 A data.frame with the main variable and associated dummy variables.
 }
 \description{
-Function to insert a categorical variable, creating dummy variables (one for each level).
+Function to insert a categorical variable from a data-frame, creating dummy variables (one for each level).
 }
