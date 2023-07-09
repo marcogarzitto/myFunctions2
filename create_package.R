@@ -7,7 +7,7 @@
 
 # library(devtools)
 # library(roxygen2)
-# devtools::create('name_of_the_package')
+# devtools::create('myFunctions2')
 
 #
 
@@ -17,7 +17,7 @@
 
 #
 
-# devtools::install_github('marcogarzitto/myFunctions')
+# devtools::install_github('marcogarzitto/myFunctions2')
 
 #
 
