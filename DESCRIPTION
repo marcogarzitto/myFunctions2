@@ -1,0 +1,15 @@
+Package: myFunctions2
+Title: Collection of personal functions
+Version: 0.0.0.9000
+Authors@R: 
+    person('Marco',
+           'Garzitto',
+           'marcogarzitto@gmail.com',
+           role = c('aut', 'cre'),
+           comment = c(ORCID = 'https://orcid.org/0000-0001-7565-420X'))
+Description: Collection of personal functions.
+License: `use_mit_license()`, `use_gpl3_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Depends: psych, xlsx
