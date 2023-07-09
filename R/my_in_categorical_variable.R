@@ -4,17 +4,23 @@
 #'
 #' @param name_in Name of the variable in the input data.frame. String. Default: None.
 #' @param df_in Input data.frame (with the 'name_in' variable). Data.frame. Default: IN.
-#' @param levels_in_to_exclude Levels to be excluded. String vector. Default: c('NA').
+#' @param levels_in Levels to be used in the in the original variable (should be in the desired order; if absent, available levels are used). String vector. Default: c().
+#' @param levels_in_to_exclude Levels to be excluded. String vector. Default: c('NA', NA).
 #' @param name_out Name for the variable in the resulting data.frame (if absent, 'name_in' is used). String. Default: ''.
 #' @param label_out Label (using 'Hmisc::label()') for the variable in the resulting data.frame (if absent, 'Hmisc:label()' of 'name_in' is used, possibly set to 'name_in'). String. Default: ''.
-#' @param levels_out Levels to be used in the in the resulting data.frame (should be in the same number and order as the original levels; if absent, original levels are used). String vector. Default: c().
+#' @param levels_out Levels to be used in the in the resulting data.frame (should correspond to those indicated in 'levels_in'; if absent, original levels are used). String vector. Default: c().
 #' @return A data.frame with the main variable and associated dummy variables.
 #' @export
-my_in_categorical_variable <- function (name_in, df_in = IN, levels_in_to_exclude = c('NA'), name_out = '', label_out = '', levels_out = c())
+my_in_categorical_variable <- function (name_in, df_in = IN, levels_in = c(), levels_in_to_exclude = c('NA', NA), name_out = '', label_out = '', levels_out = c())
 {
- if(Hmisc::label(df_in[, c(name_in)]) == '')
+ IN <- df_in[, c(name_in)]
+ if (is.null(levels_in))
  {
-  Hmisc::label(df_in[, c(name_in)]) <- name_in
+  levels_in <- levels(ordered(as.character(IN)))
+ }
+ if (Hmisc::label(IN) == '')
+ {
+  Hmisc::label(IN) <- name_in
  }
  if (is.na(name_out) | name_out == '')
  {
@@ -22,10 +28,10 @@ my_in_categorical_variable <- function (name_in, df_in = IN, levels_in_to_exclud
  }
  if (is.na(label_out) | label_out == '')
  {
-  label_out <- Hmisc::label(df_in[, c(name_in)])
+  label_out <- Hmisc::label(IN)
  }
  #
- OUT <- data.frame(out = ordered(as.character(df_in[, c(name_in)]), exclude = levels_in_to_exclude))
+ OUT <- data.frame(out = ordered(as.character(IN), levels = levels_in, exclude = levels_in_to_exclude))
  #
  if (is.null(levels_out))
  {

@@ -7,7 +7,8 @@
 my_in_categorical_variable(
   name_in,
   df_in = IN,
-  levels_in_to_exclude = c("NA"),
+  levels_in = c(),
+  levels_in_to_exclude = c("NA", NA),
   name_out = "",
   label_out = "",
   levels_out = c()
@@ -18,13 +19,15 @@ my_in_categorical_variable(
 
 \item{df_in}{Input data.frame (with the 'name_in' variable). Data.frame. Default: IN.}
 
-\item{levels_in_to_exclude}{Levels to be excluded. String vector. Default: c('NA').}
+\item{levels_in}{Levels to be used in the in the original variable (should be in the desired order; if absent, available levels are used). String vector. Default: c().}
+
+\item{levels_in_to_exclude}{Levels to be excluded. String vector. Default: c('NA', NA).}
 
 \item{name_out}{Name for the variable in the resulting data.frame (if absent, 'name_in' is used). String. Default: ''.}
 
 \item{label_out}{Label (using 'Hmisc::label()') for the variable in the resulting data.frame (if absent, 'Hmisc:label()' of 'name_in' is used, possibly set to 'name_in'). String. Default: ''.}
 
-\item{levels_out}{Levels to be used in the in the resulting data.frame (should be in the same number and order as the original levels; if absent, original levels are used). String vector. Default: c().}
+\item{levels_out}{Levels to be used in the in the resulting data.frame (should correspond to those indicated in 'levels_in'; if absent, original levels are used). String vector. Default: c().}
 }
 \value{
 A data.frame with the main variable and associated dummy variables.
