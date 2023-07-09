@@ -4,20 +4,28 @@
 \alias{my_in_continuous_variable}
 \title{my_in_continuous_variable}
 \usage{
-my_in_continuous_variable(name_in, df_in = IN, name_out = "", label_out = "")
+my_in_continuous_variable(
+  name_in,
+  df_in = IN,
+  name_out = "",
+  df_out = DF,
+  label_out = ""
+)
 }
 \arguments{
-\item{name_in}{Name of the variable in the input data.frame. String. Default: None.}
+\item{name_in}{Name of the variable in the input data-frame. String. Default: None.}
 
-\item{df_in}{Input data.frame (with the 'name_in' variable). Data.frame. Default: IN.}
+\item{df_in}{Input data-frame (with the 'name_in' variable). Data-frame. Default: IN.}
 
-\item{name_out}{Name for the variable in the resulting data.frame (if absent, 'name_in' is used). String. Default: ''.}
+\item{name_out}{Name for the variable in the resulting data-frame (if absent, 'name_in' is used). String. Default: ''.}
 
-\item{label_out}{Label (using 'Hmisc::label()') for the variable in the resulting data.frame (if absent, 'Hmisc:label()' of 'name_in' is used, possibly set to 'name_in'). String. Default: ''.}
+\item{df_out}{Output data-frame (possible without the 'name_out' variable). Data-frame. Default: DF.}
+
+\item{label_out}{Label (using 'Hmisc::label()') for the variable in the resulting data-frame (if absent, 'Hmisc:label()' of 'name_in' is used, possibly set to 'name_in'). String. Default: ''.}
 }
 \value{
-A data.frame with the main variable and associated dummy variables.
+A data-frame with the main variable (column-binded to 'df_out').
 }
 \description{
-Function to insert a continuous variable from a data-frame.
+Function to insert a continuous variable from a data-frame into another data-frame.
 }
