@@ -41,6 +41,8 @@ my_in_categorical_variable <- function (name_in, df_in = IN, levels_in = c(), le
  levels(OUT$out) <- levels_out
  Hmisc::label(OUT$out) <- label_out
  #
+ levels_out <- unique(levels_out)
+ #
  if (length(levels_out) > 1)
  {
   contrasts(OUT$out) <- contr.treatment(length(levels_out), base = 1)
