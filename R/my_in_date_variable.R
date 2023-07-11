@@ -1,6 +1,6 @@
-#' my_in_continuous_variable
+#' my_in_date_variable
 #'
-#' Function to insert a continuous variable from a data-frame into another data-frame.
+#' Function to insert a variable in xlsx date-format from a data-frame into another data-frame.
 #'
 #' @param name_in Name of the variable in the input data-frame. String. Default: None.
 #' @param df_in Input data-frame (with the 'name_in' variable). Data-frame. Default: IN.
@@ -9,7 +9,7 @@
 #' @param label_out Label (using 'Hmisc::label()') for the variable in the resulting data-frame (if absent, 'Hmisc:label()' of 'name_in' is used, possibly set to 'name_in'). String. Default: ''.
 #' @return A data-frame with the main variable (column-binded to 'df_out').
 #' @export
-my_in_continuous_variable <- function (name_in, df_in = IN, name_out = '', df_out = DF, label_out = '')
+my_in_date_variable <- function (name_in, df_in = IN, name_out = '', df_out = DF, label_out = '')
 {
  IN <- df_in[, c(name_in)]
  if(Hmisc::label(IN) == '')
@@ -25,7 +25,7 @@ my_in_continuous_variable <- function (name_in, df_in = IN, name_out = '', df_ou
   label_out <- Hmisc::label(IN)
  }
  #
- OUT <- data.frame(out = as.numeric(as.character(IN)))
+ OUT <- data.frame(out = as.Date(IN)) # , '%Y-%m-%d'))
  #
  Hmisc::label(OUT$out) <- label_out
  #
