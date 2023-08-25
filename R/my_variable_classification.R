@@ -15,10 +15,10 @@ my_variable_classification <- function (variable = '', df = DF)
  if (is.numeric(Y) & (length(levels(as.factor(as.character(Y)))) < 5)) { OUT <- 'Poor continuous' }
  if (is.numeric(Y) & (length(levels(as.factor(as.character(Y)))) == 2)) { OUT <- 'Dummy' }
  if (is.numeric(Y) & (length(levels(as.factor(as.character(Y)))) == 1)) { OUT <- 'Empty continuous' }
- if (is.factor(Y) & (length(levels(Y)) == 2) ) { OUT <- 'Dichotomous' }
- if (is.factor(Y) & (length(levels(Y)) > 2)) { OUT <- 'Polytomous' }
- if (is.factor(Y) & (length(levels(Y)) > 10)) { OUT <- 'High polytomous' }
- if (is.factor(Y) & (length(levels(Y)) == 1)) { OUT <- 'Empty categorical' }
+ if (is.factor(Y) & (length(levels(ordered(as.character(Y)))) == 2) ) { OUT <- 'Dichotomous' }
+ if (is.factor(Y) & (length(levels(ordered(as.character(Y)))) > 2)) { OUT <- 'Polytomous' }
+ if (is.factor(Y) & (length(levels(ordered(as.character(Y)))) > 10)) { OUT <- 'High polytomous' }
+ if (is.factor(Y) & (length(levels(ordered(as.character(Y)))) == 1)) { OUT <- 'Empty categorical' }
  if (!is.numeric(Y) & (sum(paste(sapply(Y, substr, 6, 6), sapply(Y, substr, 3, 3), sep = '') == '..') == sum(!is.na(Y)))) { OUT <- 'Date' }
  if (inherits(Y, 'Date')) { OUT <- 'Date' }
  if (sum(!is.na(Y)) == 0) { OUT <- 'Empty' }
