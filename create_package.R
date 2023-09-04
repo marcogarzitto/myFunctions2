@@ -18,6 +18,7 @@
 #
 
 # devtools::install_github('marcogarzitto/myFunctions2')
+# library(myFunctions2)
 
 #
 

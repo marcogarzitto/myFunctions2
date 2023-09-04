@@ -16,7 +16,7 @@ my_nice_r <- function (value, decimals = 3, with_r = TRUE, spearman = FALSE, wit
  {
   if (spearman)
   {
-   text <- 'r\u209B'
+   text <- '\u03C1'
   } else
   {
    text <- 'r'
