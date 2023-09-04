@@ -62,7 +62,7 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
                              if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta >= 0.11) & (ES$Cliff.delta < 0.28)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
                              if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta >= 0.28) & (ES$Cliff.delta < 0.43)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
                              if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta >= 0.43)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
-                             effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
+  effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description <- paste(levels(DATA$G)[1], ':', ' ',
                              my_nice(mean(Y1, na.rm = TRUE), decimals = 2, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),

@@ -22,8 +22,8 @@
 
 #
 
-# Depends: psych, xlsx, Hmisc, car, effsize
-# install.packages(c('psych', 'xlsx', 'Hmisc', 'car', 'effsize'), dep = TRUE)
+# Depends: psych, xlsx, Hmisc, car, effsize, effectsize, FSA
+# install.packages(c('psych', 'xlsx', 'Hmisc', 'car', 'effsize', 'effectsize', 'FSA'), dep = TRUE)
 # update.packages(ask = 'graphics', checkBuilt = TRUE)
 
 #
