@@ -56,10 +56,10 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
                  ',', ' ', my_nice_r(value = TEST$conf.int[2], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string), ']',
                  sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate) <= 0.1)) { effect_size_interpretation <- paste(',', ' ', 'Negligible effect', sep = '') }
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.1) & (abs(TEST$estimate) <= 0.3)) { effect_size_interpretation <- paste(',', ' ', 'Small effect', sep = '') }
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.3) & (abs(TEST$estimate) <= 0.7)) { effect_size_interpretation <- paste(',', ' ', 'Moderate effect', sep = '') }
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.7)) { effect_size_interpretation <- paste(',', ' ', 'Large effect', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate) <= 0.1)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.1) & (abs(TEST$estimate) <= 0.3)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.3) & (abs(TEST$estimate) <= 0.7)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.7)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
                              effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description <- void_string
