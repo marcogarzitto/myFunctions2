@@ -9,7 +9,8 @@ my_anova(
   group,
   void_string = "-",
   alpha_value = 0.05,
-  multiple_alphas = c(0.05, 0.01, 0.001)
+  multiple_alphas = c(0.05, 0.01, 0.001),
+  wise = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ my_anova(
 \item{alpha_value}{Statistical significance. Numeric value. Default: 0.050.}
 
 \item{multiple_alphas}{Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).}
+
+\item{wise}{Boolean, if true, the most appropriate test is used according to the data. Default: TRUE}
 }
 \value{
 A list with results: 'test' (string, with results of the one-way between-subjects ANOVA), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable).

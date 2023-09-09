@@ -21,15 +21,15 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  #
  DATA <- na.omit(data.frame(A = a, B = b))
  if (!is.factor(DATA$A)) { DATA$A <- ordered(DATA$A) }
- if (!is.factor(DATA$B)) { b <- ordered(DATA$B) }
+ if (!is.factor(DATA$B)) { DATA$B <- ordered(DATA$B) }
  levels_input_all_a <- levels(DATA$A)
  levels_input_all_b <- levels(DATA$B)
- a <- droplevels(DATA$A)
- b <- droplevels(DATA$B)
+ DATA$A <- droplevels(DATA$A)
+ DATA$B <- droplevels(DATA$B)
  levels_input_drop_a <- levels(DATA$A)
  levels_input_drop_b <- levels(DATA$B)
- if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- '' } else { empty_levels_a <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
- if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- '' } else { empty_levels_b <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- 'All levels represented (1st-variable)' } else { empty_levels_a <- paste('Empy levels (excluded, 1st-variable)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- 'All levels represented (2nd-variable)' } else { empty_levels_b <- paste('Empy levels (excluded, 2nd-variable)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
  if ((length(levels(DATA$A)) != 2) & (length(levels(DATA$B)) != 2)) { return(RESULTS) }
  if (identical(DATA$A, DATA$B)) { return(RESULTS) }
@@ -97,7 +97,8 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
                              my_nice_percent(100 * length(DATA$A[(DATA$A == levels(DATA$A)[2]) & (DATA$B == levels(DATA$B)[2])]) / length(DATA$A[(DATA$A == levels(DATA$A)[2])]), decimals = 2, text = '', percent_sign = TRUE, per_level = '100', min_value = 0, max_value = 100, with_equal_sign = FALSE, with_sign = FALSE, void_string = void_string),
                              ' ', '(', levels(DATA$B)[2], ')',
                              sep = '')
- gropus_description <- paste(c(groups_description, empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
+ empty_levels <- paste(c(empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
+ groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  return(RESULTS)

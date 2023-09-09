@@ -9,7 +9,8 @@ my_pearson_r(
   x,
   void_string = "-",
   alpha_value = 0.05,
-  multiple_alphas = c(0.05, 0.01, 0.001)
+  multiple_alphas = c(0.05, 0.01, 0.001),
+  wise = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ my_pearson_r(
 \item{alpha_value}{Statistical significance. Numeric value. Default: 0.050.}
 
 \item{multiple_alphas}{Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).}
+
+\item{wise}{Boolean, if true, the most appropriate test is used according to the data. Default: TRUE}
 }
 \value{
 A list with results: 'test' (string, with results of the Pearson's correlation), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, reporting the direction of the correlation), 'es' (string, effect-size for statistically significant results), 'groups' (string, actually a void string).

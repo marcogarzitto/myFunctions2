@@ -20,8 +20,8 @@ my_spearman_r <- function (y, x, void_string = '-', alpha_value = 0.050, multipl
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(Y = y, X = x))
- DATA$y <- as.numeric(DATA$y)
- DATA$x <- as.numeric(DATA$x)
+ DATA$Y <- as.numeric(DATA$Y)
+ DATA$X <- as.numeric(DATA$X)
  #
  if (dim(DATA)[1] <= 3) { return(RESULTS) }
  if (identical(DATA$Y, DATA$X)) { return(RESULTS) }

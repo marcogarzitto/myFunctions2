@@ -7,9 +7,10 @@
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
+#' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
 #' @return A list with results: 'test' (string, with results of the between-subjects t-test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable).
 #' @export
-my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001))
+my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE)
 {
  result <- void_string
  p_value <- 1.0
@@ -20,12 +21,12 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(Y = y, G = group))
- DATA$y <- as.numeric(DATA$y)
+ DATA$Y <- as.numeric(DATA$Y)
  if (!is.factor(DATA$G)) { DATA$G <- ordered(DATA$G) }
  levels_input_all <- levels(DATA$G)
  DATA$G <- droplevels(DATA$G)
  levels_input_drop <- levels(DATA$G)
- if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- '' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- 'All levels represented' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
  if (length(levels(DATA$G)) != 2) { return(RESULTS) }
  #
@@ -36,8 +37,11 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  if ((min(table(DATA$G)) < 3) & (sd(DATA$Y) <= 0)) { return(RESULTS) }
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
-        note <- ''
-        if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- ' (not-applicable)' }
+ #
+ if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ #
+ note <- ''
+      if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- ' (not-applicable)' }
  TEST <- t.test(Y ~ G, data = DATA)
  #
  result <- paste('t',

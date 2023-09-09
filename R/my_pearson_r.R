@@ -7,9 +7,10 @@
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
+#' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
 #' @return A list with results: 'test' (string, with results of the Pearson's correlation), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, reporting the direction of the correlation), 'es' (string, effect-size for statistically significant results), 'groups' (string, actually a void string).
 #' @export
-my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001))
+my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE)
 {
  result <- void_string
  p_value <- 1.0
@@ -20,11 +21,13 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(Y = y, X = x))
- DATA$y <- as.numeric(DATA$y)
- DATA$x <- as.numeric(DATA$x)
+ DATA$Y <- as.numeric(DATA$Y)
+ DATA$X <- as.numeric(DATA$X)
  #
  if (dim(DATA)[1] <= 3) { return(RESULTS) }
  if (identical(DATA$Y, DATA$X)) { return(RESULTS) }
+ #
+ if (wise & (shapiro.test(DATA$Y)[2] < 0.050) & (shapiro.test(DATA$X)[2] < 0.050)) { return(my_spearman_r(y = y, x = x, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
       if ((shapiro.test(DATA$Y)[2] < 0.050) & (shapiro.test(DATA$X)[2] < 0.050)) { note <- ' (not-applicable)' }

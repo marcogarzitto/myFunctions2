@@ -7,9 +7,10 @@
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
+#' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
 #' @return A list with results: 'test' (string, with results of the Chi-squared test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a).
 #' @export
-my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001))
+my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE)
 {
  result <- void_string
  p_value <- 1.0
@@ -21,15 +22,17 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  #
  DATA <- na.omit(data.frame(A = a, B = b))
  if (!is.factor(DATA$A)) { DATA$A <- ordered(DATA$A) }
- if (!is.factor(DATA$B)) { DATA$A <- ordered(DATA$A) }
+ if (!is.factor(DATA$B)) { DATA$B <- ordered(DATA$B) }
  levels_input_all_a <- levels(DATA$A)
  levels_input_all_b <- levels(DATA$B)
- a <- droplevels(DATA$A)
- b <- droplevels(DATA$A)
+ DATA$A <- droplevels(DATA$A)
+ DATA$B <- droplevels(DATA$B)
  levels_input_drop_a <- levels(DATA$A)
  levels_input_drop_b <- levels(DATA$B)
- if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- '' } else { empty_levels_a <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
- if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- '' } else { empty_levels_b <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- 'All levels represented (1st-variable)' } else { empty_levels_a <- paste('Empy levels (excluded, 1st-variable)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- 'All levels represented (2nd-variable)' } else { empty_levels_b <- paste('Empy levels (excluded, 2nd-variable)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ #
+ if (wise & (length(levels(DATA$A)) == 2) & (length(levels(DATA$B)) == 2)) { return(my_fisher(a = a, b = b, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  if ((length(levels(DATA$A)) < 2) | (length(levels(DATA$B)) < 2)) { return(RESULTS) }
  if (identical(DATA$A, DATA$B)) { return(RESULTS) }
@@ -107,7 +110,8 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
   groups_description <- c(groups_description, paste(level_a, ':', ' ', paste(inside_group, collapse = paste(' ', 'and', ' ', sep = '')), sep = ''))
  }
  groups_description <- paste(groups_description, collapse = paste(' ', '-vs-', ' ', sep = ''))
- gropus_description <- paste(c(groups_description, empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
+ empty_levels <- paste(c(empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
+ groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  return(RESULTS)

@@ -20,12 +20,12 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(Y = y, G = group))
- DATA$y <- as.numeric(DATA$y)
+ DATA$Y <- as.numeric(DATA$Y)
  if (!is.factor(DATA$G)) { DATA$G <- ordered(DATA$G) }
  levels_input_all <- levels(DATA$G)
  DATA$G <- droplevels(DATA$G)
  levels_input_drop <- levels(DATA$G)
- if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- '' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- 'All levels represented' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
  if (length(levels(DATA$G)) != 2) { return(RESULTS) }
  #
