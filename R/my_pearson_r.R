@@ -27,10 +27,10 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
  if (dim(DATA)[1] <= 3) { return(RESULTS) }
  if (identical(DATA$Y, DATA$X)) { return(RESULTS) }
  #
- if (wise & (shapiro.test(DATA$Y)[2] < 0.050) & (shapiro.test(DATA$X)[2] < 0.050)) { return(my_spearman_r(y = y, x = x, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ if (wise & (shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { return(my_spearman_r(y = y, x = x, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
-      if ((shapiro.test(DATA$Y)[2] < 0.050) & (shapiro.test(DATA$X)[2] < 0.050)) { note <- ' (not-applicable)' }
+      if ((shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { note <- ' (not-applicable)' }
  TEST <- cor.test(DATA$Y, DATA$X, method = 'pearson')
  #
  result <- paste(my_nice_r(value = TEST$estimate, decimals = 3, with_r = TRUE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string),
