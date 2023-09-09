@@ -19,10 +19,15 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  groups_description <- void_string
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
- y <- as.numeric(y)
- if (!is.factor(group)) { group <- ordered(group) }  
- group <- droplevels(group)
  DATA <- na.omit(data.frame(Y = y, G = group))
+ DATA$Y <- as.numeric(DATA$Y)
+ if (!is.factor(DATA$G)) { DATA$G <- ordered(DATA$G) }
+ levels_input_all <- levels(DATA$G)
+ DATA$G <- droplevels(DATA$G)
+ levels_input_drop <- levels(DATA$G)
+ if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- '' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ levels_new <- gsub('-', '§§§', levels_input_drop)
+ levels(DATA$G) <- levels_new
  #
  if (length(levels(DATA$G)) < 2) { return(RESULTS) }
  #
@@ -57,6 +62,7 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
    } else { SIGN <- '=' }
    ROW <- paste(gsub('-', paste(' ', SIGN, ' ', sep = ''), ROW),
                 ' ', '(', my_nice_p(POST[ROW, c('p')], decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string), ')', sep = '')
+   ROW <- gsub('§§§', '-', ROW)
    ROWS <- c(ROWS, ROW)
   }
   comparison <- paste(ROWS, collapse = paste(';', ' ', sep = ''))
@@ -64,6 +70,7 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  {
   comparison <- paste(levels(DATA$G), collapse = paste(' ', '=', ' ', sep = ''))
  }
+ comparison <- gsub('§§§', '-', comparison)
  #
  if (p_value < alpha_value)
  {
@@ -89,6 +96,8 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
   inside_group <- apply(inside_group, 1, paste, collapse = ' ')
  }
  groups_description <- paste(inside_group, collapse = paste(' ', '-vs-', ' ', sep = ''))
+ groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
+ groups_description <- gsub('§§§', '-', groups_description)
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  return(RESULTS)

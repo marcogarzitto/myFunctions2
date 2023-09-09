@@ -19,10 +19,13 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  groups_description <- void_string
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
- y <- as.numeric(y)
- if (!is.factor(group)) { group <- ordered(group) }  
- group <- droplevels(group)
  DATA <- na.omit(data.frame(Y = y, G = group))
+ DATA$y <- as.numeric(DATA$y)
+ if (!is.factor(DATA$G)) { DATA$G <- ordered(DATA$G) }
+ levels_input_all <- levels(DATA$G)
+ DATA$G <- droplevels(DATA$G)
+ levels_input_drop <- levels(DATA$G)
+ if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- '' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
  if (length(levels(DATA$G)) != 2) { return(RESULTS) }
  #
@@ -78,6 +81,7 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
                              my_nice(mean(Y2, na.rm = TRUE), decimals = 2, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                              ' ', '\u00B1', my_nice(sd(Y2, na.rm = TRUE), decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
                              sep = '')
+ groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  return(RESULTS)

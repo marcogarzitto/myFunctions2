@@ -19,11 +19,17 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  groups_description <- void_string
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
- if (!is.factor(a)) { a <- ordered(a) }
- if (!is.factor(b)) { b <- ordered(b) }
- a <- droplevels(a)
- b <- droplevels(b)
  DATA <- na.omit(data.frame(A = a, B = b))
+ if (!is.factor(DATA$A)) { DATA$A <- ordered(DATA$A) }
+ if (!is.factor(DATA$B)) { DATA$A <- ordered(DATA$A) }
+ levels_input_all_a <- levels(DATA$A)
+ levels_input_all_b <- levels(DATA$B)
+ a <- droplevels(DATA$A)
+ b <- droplevels(DATA$A)
+ levels_input_drop_a <- levels(DATA$A)
+ levels_input_drop_b <- levels(DATA$B)
+ if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- '' } else { empty_levels_a <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- '' } else { empty_levels_b <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
  if ((length(levels(DATA$A)) < 2) | (length(levels(DATA$B)) < 2)) { return(RESULTS) }
  if (identical(DATA$A, DATA$B)) { return(RESULTS) }
@@ -101,6 +107,7 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
   groups_description <- c(groups_description, paste(level_a, ':', ' ', paste(inside_group, collapse = paste(' ', 'and', ' ', sep = '')), sep = ''))
  }
  groups_description <- paste(groups_description, collapse = paste(' ', '-vs-', ' ', sep = ''))
+ gropus_description <- paste(c(groups_description, empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  return(RESULTS)
