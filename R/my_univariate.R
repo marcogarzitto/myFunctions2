@@ -59,7 +59,7 @@ my_univariate <- function (dv, iv, void_string = '-', alpha_value = 0.050, multi
   if (iv_classification == 'Continuous') { RESULTS <- my_ttest(y = iv, group = dv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise) }
   if (iv_classification == 'Poor continuous') { RESULTS <- my_ttest(y = iv, group = dv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise) }
   if (iv_classification == 'Dummy') { RESULTS <- my_ttest(y = iv, group = dv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise) }
-  if (iv_classification == 'Dichotomous') { RESULTS <- my_fisher(a = dv, b = iv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise) }
+  if (iv_classification == 'Dichotomous') { RESULTS <- my_fisher(a = dv, b = iv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas) }
   if (iv_classification == 'Polytomous') { RESULTS <- my_chisquare(a = dv, b = iv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise) }
  }
  #
