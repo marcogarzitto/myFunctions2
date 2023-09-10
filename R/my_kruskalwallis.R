@@ -72,15 +72,8 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  #
  if (p_value < alpha_value)
  {
-  ES <- rcompanion::epsilonSquared(Y ~ G, data = DATA, ci = FALSE)
-     if (ES == 1)
-     {
-      ES <- data.frame(est = ES, lower.ci = NA, upper.ci = NA)
-     } else
-     {
-      ES <- rcompanion::epsilonSquared(Y ~ G, data = DATA, ci = TRUE, conf = 0.950)
-         names(ES) <- c('est', 'lower.ci', 'upper.ci')
-     }
+  ES <- rcompanion::epsilonSquared(DATA$Y, DATA$G, ci = TRUE, conf = 0.950)
+     names(ES) <- c('est', 'lower.ci', 'upper.ci')
   effect_size <- paste(my_nice(ES$est, decimals = 3, text = "\u03B5\u00B2", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$lower.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
