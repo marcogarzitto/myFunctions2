@@ -34,7 +34,7 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  Y2 <- DATA$Y[DATA$G == levels(DATA$G)[2]]
  if (identical(Y1, Y2)) { return(RESULTS) }
  #
- if ((min(table(DATA$G)) < 3) & (sd(DATA$Y) <= 0)) { return(RESULTS) }
+ if ((min(table(DATA$G)) < 3) | (min(table(!is.na(DATA$Y), DATA$G)) < 3) | (sd(DATA$Y) <= 0) | (is.na(sd(DATA$Y)))) { return(RESULTS) }
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
  #

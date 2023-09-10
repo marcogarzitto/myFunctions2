@@ -31,7 +31,7 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  #
  if (length(levels(DATA$G)) < 2) { return(RESULTS) }
  #
- if ((min(table(DATA$G)) < 3) & (sd(DATA$Y) <= 0)) { return(RESULTS) }
+ if ((min(table(DATA$G)) < 3) | (min(table(!is.na(DATA$Y), DATA$G)) < 3) | (sd(DATA$Y) <= 0) | (is.na(sd(DATA$Y)))) { return(RESULTS) }
  #
  MOD <- lm(Y ~ G, data = DATA)
  TEST <- kruskal.test(Y ~ G, data = DATA)
