@@ -55,24 +55,17 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  #
  if (p_value < alpha_value)
  {
-  ES <- rcompanion::cliffDelta(Y ~ G, data = DATA, ci = FALSE)
-  if ((is.na(ES$Cliff.delta)) | (ES$Cliff.delta == 1))
-  {
-   ES$lower.ci <- NA
-   ES$upper.ci <- NA
-  } else
-  {
-   ES <- rcompanion::cliffDelta(Y ~ G, data = DATA, ci = TRUE)
-  }
-  effect_size <- paste(my_nice(ES$Cliff.delta, decimals = 3, text = "Cliff's \u03B4", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
+  ES <- rcompanion::vda(Y ~ G, data = DATA, ci = TRUE)
+     names(ES) <- c('est', 'lower.ci', 'upper.ci')
+  effect_size <- paste(my_nice(ES$est, decimals = 3, text = "Vargha-Delaney's A", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$lower.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta  < 0.11)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta >= 0.11) & (ES$Cliff.delta < 0.28)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta >= 0.28) & (ES$Cliff.delta < 0.43)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(ES$Cliff.delta) & (ES$Cliff.delta >= 0.43)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est  < 0.56)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est >= 0.56) & (ES$est < 0.64)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est >= 0.64) & (ES$est < 0.71)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est >= 0.71)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description <- paste(levels(DATA$G)[1], ':', ' ',
