@@ -66,15 +66,8 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  #
  if (p_value < alpha_value)
  {
-  ES <- rcompanion::cramerV(Y ~ G, data = DATA, ci = FALSE)
-   if (ES == 1)
-   {
-    ES <- data.frame(est = ES, lower.ci = NA, upper.ci = NA)
-   } else
-   {
-    ES <- rcompanion::cramerV(Y ~ G, data = DATA, ci = TRUE)
-       names(ES) <- c('est', 'lower.ci', 'upper.ci')
-   }
+  ES <- rcompanion::cramerV(DATA$A, DATA$B, ci = TRUE)
+     names(ES) <- c('est', 'lower.ci', 'upper.ci')
   effect_size <- paste(my_nice(ES$est, decimals = 3, text = "Cramer's V", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$lower.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
