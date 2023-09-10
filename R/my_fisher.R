@@ -71,7 +71,7 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  if (p_value < alpha_value)
  {
   ES <- rcompanion::phi(table(DATA$A, DATA$B), ci = FALSE)
-     if (ES == 1)
+     if ((ES == 0) | (ES >= 0.999))
      {
       ES <- data.frame(est = ES, lower.ci = NA, upper.ci = NA)
      } else
