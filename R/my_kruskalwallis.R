@@ -72,16 +72,24 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  #
  if (p_value < alpha_value)
  {
-  ES <- rcompanion::epsilonSquared(x = DATA$Y, g = DATA$G, ci = TRUE, conf = 0.950)
-  effect_size <- paste(my_nice(ES$epsilon.squared, decimals = 3, text = "\u03B5\u00B2", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
+  ES <- rcompanion::epsilonSquared(Y ~ G, data = DATA, ci = FALSE)
+     if (ES == 1)
+     {
+      ES <- data.frame(est = ES, lower.ci = NA, upper.ci = NA)
+     } else
+     {
+      ES <- rcompanion::epsilonSquared(Y ~ G, data = DATA, ci = TRUE, conf = 0.950)
+         names(ES) <- c('est', 'lower.ci', 'upper.ci')
+     }
+  effect_size <- paste(my_nice(ES$est, decimals = 3, text = "\u03B5\u00B2", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$lower.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(ES$epsilon.squared) & (ES$epsilon.squared <= 0.01)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(ES$epsilon.squared) & (ES$epsilon.squared  > 0.01) & (ES$epsilon.squared <= 0.04)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(ES$epsilon.squared) & (ES$epsilon.squared  > 0.04) & (ES$epsilon.squared <= 0.36)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(ES$epsilon.squared) & (ES$epsilon.squared  > 0.36)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est <= 0.01)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est  > 0.01) & (ES$est <= 0.04)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est  > 0.04) & (ES$est <= 0.36)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(ES$est) & (ES$est  > 0.36)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description  <- c()

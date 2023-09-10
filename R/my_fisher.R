@@ -70,16 +70,24 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  #
  if (p_value < alpha_value)
  {
-  ES <- rcompanion::phi(table(DATA$A, DATA$B), ci = TRUE)
-  effect_size <- paste(my_nice(ES$phi, decimals = 3, text = "\u03C6", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
+  ES <- rcompanion::phi(Y ~ G, data = DATA, ci = FALSE)
+   if (ES == 1)
+   {
+    ES <- data.frame(est = ES, lower.ci = NA, upper.ci = NA)
+   } else
+   {
+    ES <- rcompanion::phi(Y ~ G, data = DATA, ci = TRUE)
+       names(ES) <- c('est', 'lower.ci', 'upper.ci')
+   }
+  effect_size <- paste(my_nice(ES$est, decimals = 3, text = "\u03C6", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$lower.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(ES$phi) & (abs(ES$phi)  < 0.1)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(ES$phi) & (abs(ES$phi) >= 0.1) & (abs(ES$phi) < 0.3)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(ES$phi) & (abs(ES$phi) >= 0.3) & (abs(ES$phi) < 0.5)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(ES$phi) & (abs(ES$phi) >= 0.5)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est)  < 0.1)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est) >= 0.1) & (abs(ES$est) < 0.3)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est) >= 0.3) & (abs(ES$est) < 0.5)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est) >= 0.5)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
   effect_size <- paste(effect_size, ' ', '(', annotation, ')', sep = '')
  }
