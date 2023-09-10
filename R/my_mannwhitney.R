@@ -55,7 +55,15 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  #
  if (p_value < alpha_value)
  {
-  ES <- rcompanion::cliffDelta(Y ~ G, data = DATA, ci = TRUE)
+  ES <- rcompanion::cliffDelta(Y ~ G, data = DATA, ci = FALSE)
+  if ((is.na(ES$Cliff.delta)) | (ES$Cliff.delta == 1))
+  {
+   ES$lower.ci <- NA
+   ES$upper.ci <- NA
+  } else
+  {
+   ES <- rcompanion::cliffDelta(Y ~ G, data = DATA, ci = TRUE)
+  }
   effect_size <- paste(my_nice(ES$Cliff.delta, decimals = 3, text = "Cliff's \u03B4", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$lower.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
