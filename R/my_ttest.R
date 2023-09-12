@@ -71,10 +71,10 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
                        ',', ' ', my_nice(COHEN$conf.int[2], decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(COHEN$estimate) & (COHEN$estimate <= 0.2)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(COHEN$estimate) & (COHEN$estimate  > 0.2) & (COHEN$estimate <= 0.5)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(COHEN$estimate) & (COHEN$estimate  > 0.5) & (COHEN$estimate <= 0.8)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(COHEN$estimate) & (COHEN$estimate  > 0.8)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(COHEN$estimate) & (abs(COHEN$estimate) <= 0.2)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(COHEN$estimate) & (abs(COHEN$estimate)  > 0.2) & (abs(COHEN$estimate) <= 0.5)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(COHEN$estimate) & (abs(COHEN$estimate)  > 0.5) & (abs(COHEN$estimate) <= 0.8)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(COHEN$estimate) & (abs(COHEN$estimate)  > 0.8)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description <- paste(levels(DATA$G)[1], ':', ' ',

@@ -79,10 +79,10 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
                        ',', ' ', my_nice(ES$upper.ci, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(ES$est) & (ES$est <= 0.01)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(ES$est) & (ES$est  > 0.01) & (ES$est <= 0.04)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(ES$est) & (ES$est  > 0.04) & (ES$est <= 0.36)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(ES$est) & (ES$est  > 0.36)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est) <= 0.01)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est)  > 0.01) & (abs(ES$est) <= 0.04)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est)  > 0.04) & (abs(ES$est) <= 0.36)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(ES$est) & (abs(ES$est)  > 0.36)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description  <- c()
