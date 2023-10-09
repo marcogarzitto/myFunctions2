@@ -46,8 +46,8 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  #
  if (p_value < alpha_value)
  {
-  if (mean(Y1, na.rm = TRUE) > mean(Y1, na.rm = TRUE)) { comparison <- paste(levels(DATA$G)[1], ' ', '>', ' ', levels(DATA$G)[2], sep = '') }
-  if (mean(Y2, na.rm = TRUE) < mean(Y2, na.rm = TRUE)) { comparison <- paste(levels(DATA$G)[1], ' ', '<', ' ', levels(DATA$G)[2], sep = '') }
+  if (mean(Y1, na.rm = TRUE) > mean(Y2, na.rm = TRUE)) { comparison <- paste(levels(DATA$G)[1], ' ', '>', ' ', levels(DATA$G)[2], sep = '') }
+  if (mean(Y1, na.rm = TRUE) < mean(Y2, na.rm = TRUE)) { comparison <- paste(levels(DATA$G)[1], ' ', '<', ' ', levels(DATA$G)[2], sep = '') }
  } else
  {
   comparison <- paste(levels(DATA$G)[1], ' ', '=', ' ', levels(DATA$G)[2], sep = '')
