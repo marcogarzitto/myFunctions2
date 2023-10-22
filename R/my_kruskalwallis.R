@@ -25,7 +25,7 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  levels_input_all <- levels(DATA$G)
  DATA$G <- droplevels(DATA$G)
  levels_input_drop <- levels(DATA$G)
- if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- '' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
+ if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- 'All levels represented' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
  levels_new <- gsub('-', '§§§', levels_input_drop)
  levels(DATA$G) <- levels_new
  #
