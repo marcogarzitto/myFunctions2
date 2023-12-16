@@ -9,6 +9,7 @@
 my_variable_classification <- function (variable = '', df = DF)
 {
  Y <- df[, c(variable)]
+ Y[is.na(Y)] <- NA
  OUT <- 'Unknown'
  #
  if (is.numeric(Y)) { OUT <- 'Continuous' }
