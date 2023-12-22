@@ -22,10 +22,6 @@ my_paired_univariate <- function (dv, iv, void_string = '-', alpha_value = 0.050
  times_pairs <- void_string
  times_pairs_p <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
- #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  #
  DATA <- na.omit(data.frame(DV = dv, IV = iv))

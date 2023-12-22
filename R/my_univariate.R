@@ -20,11 +20,6 @@ my_univariate <- function (dv, iv, void_string = '-', alpha_value = 0.050, multi
  effect_size <- void_string
  groups_description <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
- #
- 
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(DV = dv, IV = iv))

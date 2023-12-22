@@ -9,7 +9,7 @@
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the one-way between-subjects ANOVA), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable).
+#' @return A list with results: 'test' (string, with results of the one-way between-subjects ANOVA), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable), 'groups_pairs' (list of vectors, every vector reports two groups corresponding to post-hoc comparisons), 'groups_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).
 #' @export
 my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
@@ -19,12 +19,14 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ groups_pairs <- void_string
+ groups_pairs_p <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ if (direction == 'Stable') { test_direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  #
  DATA <- na.omit(data.frame(Y = y, G = group))
  DATA$Y <- as.numeric(DATA$Y)
@@ -64,6 +66,8 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  {
   POST <- as.data.frame(TukeyHSD(aov(MOD))[1])
        names(POST) <- c('d', 'l', 'u', 'p')
+  groups_pairs <- row.names(POST)
+  groups_pairs_p <- POST$p
   ROWS <- c()
   for (ROW in row.names(POST))
   {
@@ -81,13 +85,17 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
   comparison <- paste(ROWS, collapse = paste(';', ' ', sep = ''))
  } else
  {
+  POST <- as.data.frame(TukeyHSD(aov(MOD))[1])
+  names(POST) <- c('d', 'l', 'u', 'p')
+  groups_pairs <- row.names(POST)
+  groups_pairs_p <- POST$p
   comparison <- paste(levels(DATA$G), collapse = paste(' ', '=', ' ', sep = ''))
  }
  comparison <- gsub('§§§', '-', comparison)
  #
  if (p_value < alpha_value)
  {
-  ES <- effectsize::omega_squared(TEST, partial = FALSE, alternative = 'two.sided', ci = 0.950)
+  ES <- effectsize::omega_squared(TEST, partial = FALSE, alternative = test_direction, ci = 0.950)
   effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "\u03C9\u00B2", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$CI_low, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$CI_high, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
@@ -112,7 +120,10 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  groups_description <- gsub('§§§', '-', groups_description)
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ groups_pairs <- strsplit(groups_pairs, split = "-")
+ groups_pairs_p <- groups_pairs_p
+ #
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  return(RESULTS)
 }
 

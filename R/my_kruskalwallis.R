@@ -8,7 +8,7 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the Kruskal-Wallis' rank sum test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable).
+#' @return A list with results: 'test' (string, with results of the Kruskal-Wallis' rank sum test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable), 'groups_pairs' (list of vectors, every vector reports two groups corresponding to post-hoc comparisons), 'groups_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).
 #' @export
 my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
@@ -18,12 +18,14 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ groups_pairs <- void_string
+ groups_pairs_p <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ if (direction == 'Stable') { test_direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  #
  DATA <- na.omit(data.frame(Y = y, G = group))
  DATA$Y <- as.numeric(DATA$Y)
@@ -51,10 +53,10 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  #
  if (p_value < alpha_value)
  {
-  POST <- as.data.frame(FSA::dunnTest(DATA$Y, DATA$G, method = 'bh')[2])
+  POST <- as.data.frame(FSA::dunnTest(DATA$Y, DATA$G, method = 'bh', two.sided = (direction == 'Stable'))[2])
        names(POST) <- c('groups', 'z', 'P.unadj', 'p')
-  # POST <- as.data.frame(TukeyHSD(aov(MOD))[1])
-  #      names(POST) <- c('d', 'l', 'u', 'p')
+  groups_pairs <- POST$groups
+  groups_pairs_p <- POST$z
   ROWS <- c()
   for (ROW in POST$groups)
   {
@@ -72,6 +74,10 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
   comparison <- paste(ROWS, collapse = paste(';', ' ', sep = ''))
  } else
  {
+  POST <- as.data.frame(FSA::dunnTest(DATA$Y, DATA$G, method = 'bh', two.sided = (direction == 'Stable'))[2])
+       names(POST) <- c('groups', 'z', 'P.unadj', 'p')
+  groups_pairs <- POST$groups
+  groups_pairs_p <- POST$z
   comparison <- paste(levels(DATA$G), collapse = paste(' ', '=', ' ', sep = ''))
  }
  comparison <- gsub('§§§', '-', comparison)
@@ -104,7 +110,10 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  groups_description <- gsub('§§§', '-', groups_description)
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ groups_pairs <- strsplit(groups_pairs, split = " - ")
+ groups_pairs_p <- groups_pairs_p
+ #
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  return(RESULTS)
 }
 

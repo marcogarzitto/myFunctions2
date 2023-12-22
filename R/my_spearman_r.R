@@ -1,6 +1,6 @@
 #' my_spearman_r
 #'
-#' Function to do a Pearson's correlation.
+#' Function to do a Spearman's correlation.
 #'
 #' @param y Numeric vector. Default: None.
 #' @param x Numeric vector. Default: None.
@@ -8,7 +8,7 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the Pearson's correlation), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, reporting the direction of the correlation), 'es' (string, effect-size for statistically significant results), 'groups' (string, actually a void string).
+#' @return A list with results: 'test' (string, with results of the Spearman's correlation), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, reporting the direction of the correlation), 'es' (string, effect-size for statistically significant results), 'groups' (string, actually a void string), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
 #' @export
 my_spearman_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
@@ -18,12 +18,14 @@ my_spearman_r <- function (y, x, void_string = '-', alpha_value = 0.050, multipl
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ groups_pairs <- void_string
+ groups_pairs_p <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ if (direction == 'Stable') { test_direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  #
  DATA <- na.omit(data.frame(Y = y, X = x))
  DATA$Y <- as.numeric(DATA$Y)
@@ -32,9 +34,10 @@ my_spearman_r <- function (y, x, void_string = '-', alpha_value = 0.050, multipl
  if (dim(DATA)[1] <= 3) { return(RESULTS) }
  if (identical(DATA$Y, DATA$X)) { return(RESULTS) }
  #
- TEST <- cor.test(DATA$Y, DATA$X, method = 'spearman')
+ TEST <- cor.test(DATA$Y, DATA$X, method = 'spearman', alternative = test_direction)
  #
- result <- paste(my_nice_r(value = TEST$estimate, decimals = 3, with_r = TRUE, spearman = TRUE, with_equal_sign = FALSE, void_string = void_string), ',', ' ',
+ result <- paste(my_nice_r(value = TEST$estimate, decimals = 3, with_r = TRUE, spearman = TRUE, with_equal_sign = FALSE, void_string = void_string),
+                 ' ', '(', tails, ')', ',', ' ',
                  my_nice_p(value = TEST$p.value, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
                  sep = '')
  #
@@ -63,7 +66,10 @@ my_spearman_r <- function (y, x, void_string = '-', alpha_value = 0.050, multipl
  }
  groups_description <- void_string
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ groups_pairs <- void_string
+ groups_pairs_p <- void_string
+ #
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  return(RESULTS)
 }
 
