@@ -22,9 +22,9 @@ my_paired_ttest <- function (y, time, void_string = '-', alpha_value = 0.050, mu
  times_pairs <- void_string
  times_pairs_p <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ if (direction == 'Stable') { test_direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  #
@@ -50,7 +50,7 @@ my_paired_ttest <- function (y, time, void_string = '-', alpha_value = 0.050, mu
  #
  note <- ''
       if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }
- TEST <- t.test(Y ~ T, data = DATA, paired = TRUE, alternative = direction)
+ TEST <- t.test(Y ~ T, data = DATA, paired = TRUE, alternative = test_direction)
  #
  result <- paste(note,
                  't',

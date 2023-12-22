@@ -20,9 +20,9 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  effect_size <- void_string
  groups_description <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ if (direction == 'Stable') { test_direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
@@ -44,16 +44,17 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
  #
- if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
  #
  note <- ''
       if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }
- TEST <- t.test(Y ~ G, data = DATA)
+ TEST <- t.test(Y ~ G, data = DATA, alternative = test_direction)
  #
  result <- paste(note, 
                  't',
                  '(', my_nice(value = TEST$parameter, decimals = 1, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = 0, max_value = Inf, void_string = void_string), ')',
-                 my_nice(value = TEST$statistic, decimals = 2, text = '', with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ',', ' ',
+                 my_nice(value = TEST$statistic, decimals = 2, text = '', with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
+                 ' ', '(', tails, ')', ',', ' ',
                  my_nice_p(value = TEST$p.value, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
                  sep = '')
  #

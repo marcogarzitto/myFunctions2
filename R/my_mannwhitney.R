@@ -21,9 +21,9 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  groups_pairs <- void_string
  groups_pairs_p <- void_string
  #
- if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
- if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
- if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ if (direction == 'Stable') { test_direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  #
@@ -43,9 +43,10 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  #
  if ((min(table(DATA$G)) < 3) | (min(table(!is.na(DATA$Y), DATA$G)) < 3) | (sd(DATA$Y) <= 0) | (is.na(sd(DATA$Y)))) { return(RESULTS) }
  #
- TEST <- wilcox.test(Y ~ G, data = DATA, exact = TRUE, correct = TRUE)
+ TEST <- wilcox.test(Y ~ G, data = DATA, exact = TRUE, correct = TRUE, alternative = test_direction)
  #
- result <- paste(my_nice(value = TEST$statistic, decimals = 1, text = 'U', with_equal_sign = TRUE, with_sign = FALSE, min_value = 0, max_value = 9999.99, void_string = void_string), ',', ' ',
+ result <- paste(my_nice(value = TEST$statistic, decimals = 1, text = 'U', with_equal_sign = TRUE, with_sign = FALSE, min_value = 0, max_value = 9999.99, void_string = void_string),
+                 ' ', '(', tails, ')', ',', ' ',
                  my_nice_p(value = TEST$p.value, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
                  sep = '')
  #
