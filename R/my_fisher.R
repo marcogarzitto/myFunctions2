@@ -7,9 +7,10 @@
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
+#' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
 #' @return A list with results: 'test' (string, with results of the Fisher's exact test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a).
 #' @export
-my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001))
+my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -17,6 +18,11 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ #
+ if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(A = a, B = b))

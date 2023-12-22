@@ -8,9 +8,10 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
+#' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
 #' @return A list with results: 'test' (string, with results of the one-way between-subjects ANOVA), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable).
 #' @export
-my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE)
+my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -18,6 +19,11 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ #
+ if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(Y = y, G = group))
@@ -41,15 +47,15 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_kruskalwallis(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
-      if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- ' (not-applicable)' }
+      if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }
  #
  MOD <- lm(Y ~ G, data = DATA)
  TEST <- car::Anova(MOD, type = 'III')
  #
- result <- paste('F','(', TEST$'Df'[2], ',', TEST$'Df'[3], ')', my_nice(TEST$'F value'[2], decimals = 2, text = '', with_equal_sign = TRUE, with_sign = FALSE, min_value = -Inf, max_value = Inf, void_string = void_string),
-                   note, ',', ' ', 
-                   myFunctions::give_nice_p(TEST$'Pr(>F)'[2], decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
-                   sep = '')
+ result <- paste(note, 
+                 'F','(', TEST$'Df'[2], ',', TEST$'Df'[3], ')', my_nice(TEST$'F value'[2], decimals = 2, text = '', with_equal_sign = TRUE, with_sign = FALSE, min_value = -Inf, max_value = Inf, void_string = void_string), ',', ' ', 
+                 myFunctions::give_nice_p(TEST$'Pr(>F)'[2], decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
+                 sep = '')
  #
  p_value <- as.numeric(TEST$'Pr(>F)'[2])
  if (p_value < alpha_value) { significance <- '*' }

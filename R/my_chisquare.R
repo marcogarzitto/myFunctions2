@@ -8,9 +8,10 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
+#' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
 #' @return A list with results: 'test' (string, with results of the Chi-squared test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a).
 #' @export
-my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE)
+my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -18,6 +19,11 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ #
+ if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(A = a, B = b))
@@ -41,15 +47,15 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  note <- ''
  if (sum(!apply(EXPECTED, 1, is.na)) > 0)
  {
-  if (min(EXPECTED) < 5) { note <- ' (not-applicable)' }
+  if (min(EXPECTED) < 5) { note <- '!not-applicable! ' }
  }
  #
  TEST <- chisq.test(DATA$A, DATA$B)
  #
- result <- paste('\u03C7', '\u00B2',
+ result <- paste(note,
+                 '\u03C7', '\u00B2',
                  '(', TEST$parameter, ')', '=',
-                 my_nice(value = TEST$statistic, decimals = 2, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = 0.001, max_value = 1000, void_string = void_string),
-                 note, ',', ' ',
+                 my_nice(value = TEST$statistic, decimals = 2, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = 0.001, max_value = 1000, void_string = void_string), ',', ' ',
                  my_nice_p(value = TEST$p.value, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
                  sep = '')
  #

@@ -10,7 +10,7 @@
 #' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
 #' @return A list with results: 'test' (string, with results of the Pearson's correlation), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, reporting the direction of the correlation), 'es' (string, effect-size for statistically significant results), 'groups' (string, actually a void string).
 #' @export
-my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE)
+my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -18,6 +18,11 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
+ #
+ if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
+ if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
+ if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
+ #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
  #
  DATA <- na.omit(data.frame(Y = y, X = x))
@@ -30,13 +35,13 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
  if (wise & (shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { return(my_spearman_r(y = y, x = x, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
-      if ((shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { note <- ' (not-applicable)' }
+      if ((shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { note <- '!not-applicable! ' }
  TEST <- cor.test(DATA$Y, DATA$X, method = 'pearson')
  #
- result <- paste(my_nice_r(value = TEST$estimate, decimals = 3, with_r = TRUE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string),
+ result <- paste(note,
+                 my_nice_r(value = TEST$estimate, decimals = 3, with_r = TRUE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string),
                  ' ', '[', my_nice_r(value = TEST$conf.int[1], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string),
-                 ',', ' ', my_nice_r(value = TEST$conf.int[2], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string), ']',
-                 note, ',', ' ',
+                 ',', ' ', my_nice_r(value = TEST$conf.int[2], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string), ']', ',', ' ',
                  my_nice_p(value = TEST$p.value, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
                  sep = '')
  #
