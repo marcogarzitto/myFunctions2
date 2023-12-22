@@ -8,7 +8,7 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the withween-subjects Wilcoxon's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the time variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'times' (string, mean and SD for the levels of the time variable).
+#' @return A list with results: 'test' (string, with results of the withween-subjects Wilcoxon's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the time variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'times' (string, mean and SD for the levels of the time variable), 'times_pairs' (list of vectors, every vector reports two times corresponding to post-hoc comparisons), 'times_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).
 #' @export
 my_paired_wilcoxon <- function (y, time, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
@@ -18,12 +18,14 @@ my_paired_wilcoxon <- function (y, time, void_string = '-', alpha_value = 0.050,
  comparison <- void_string
  effect_size <- void_string
  times_description <- void_string
+ times_pairs <- void_string
+ times_pairs_p <- void_string
  #
  if (direction == 'Stable') { direction = 'two.sided' ; tails = 'two-tail' }
  if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
  if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  #
  DATA <- na.omit(data.frame(Y = y, T = time))
  DATA$Y <- as.numeric(DATA$Y)
@@ -91,7 +93,10 @@ my_paired_wilcoxon <- function (y, time, void_string = '-', alpha_value = 0.050,
                              sep = '') 
  times_description <- paste(c(times_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description)
+ times_pairs <- list(levels(DATA$T))
+ times_pairs_p <- c(p_value)
+ #
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  return(RESULTS)
 }
 

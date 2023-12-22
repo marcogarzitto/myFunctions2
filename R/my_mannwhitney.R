@@ -7,7 +7,7 @@
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
-#' @return A list with results: 'test' (string, with results of the between-subjects Mann-Whitney's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable).
+#' @return A list with results: 'test' (string, with results of the between-subjects Mann-Whitney's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable), 'groups_pairs' (list of vectors, every vector reports two groups corresponding to post-hoc comparisons), 'groups_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).
 #' @export
 my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001))
 {
@@ -17,7 +17,9 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
  comparison <- void_string
  effect_size <- void_string
  groups_description <- void_string
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ groups_pairs <- void_string
+ groups_pairs_p <- void_string
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  #
  DATA <- na.omit(data.frame(Y = y, G = group))
  DATA$Y <- as.numeric(DATA$Y)
@@ -85,7 +87,10 @@ my_mannwhitney <- function (y, group, void_string = '-', alpha_value = 0.050, mu
                              sep = '') 
  groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ groups_pairs <- list(levels(DATA$G))
+ groups_pairs_p <- c(p_value)
+ #
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  return(RESULTS)
 }
 
