@@ -9,7 +9,8 @@ my_mannwhitney(
   group,
   void_string = "-",
   alpha_value = 0.05,
-  multiple_alphas = c(0.05, 0.01, 0.001)
+  multiple_alphas = c(0.05, 0.01, 0.001),
+  direction = "Stable"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ my_mannwhitney(
 \item{alpha_value}{Statistical significance. Numeric value. Default: 0.050.}
 
 \item{multiple_alphas}{Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).}
+
+\item{direction}{Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.}
 }
 \value{
 A list with results: 'test' (string, with results of the between-subjects Mann-Whitney's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable), 'groups_pairs' (list of vectors, every vector reports two groups corresponding to post-hoc comparisons), 'groups_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).

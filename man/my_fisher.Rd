@@ -9,7 +9,8 @@ my_fisher(
   b,
   void_string = "-",
   alpha_value = 0.05,
-  multiple_alphas = c(0.05, 0.01, 0.001)
+  multiple_alphas = c(0.05, 0.01, 0.001),
+  direction = "Stable"
 )
 }
 \arguments{
@@ -22,9 +23,11 @@ my_fisher(
 \item{alpha_value}{Statistical significance. Numeric value. Default: 0.050.}
 
 \item{multiple_alphas}{Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).}
+
+\item{direction}{Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.}
 }
 \value{
-A list with results: 'test' (string, with results of the Fisher's exact test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a).
+A list with results: 'test' (string, with results of the Fisher's exact test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
 }
 \description{
 Function to do a Fisher's exact test.

@@ -40,7 +40,7 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- 'All levels represented (1st-variable)' } else { empty_levels_a <- paste('Empy levels (excluded, 1st-variable)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
  if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- 'All levels represented (2nd-variable)' } else { empty_levels_b <- paste('Empy levels (excluded, 2nd-variable)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
- if (wise & (length(levels(DATA$A)) == 2) & (length(levels(DATA$B)) == 2)) { return(my_fisher(a = a, b = b, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ if (wise & (length(levels(DATA$A)) == 2) & (length(levels(DATA$B)) == 2)) { return(my_fisher(a = a, b = b, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
  #
  if ((length(levels(DATA$A)) < 2) | (length(levels(DATA$B)) < 2)) { return(RESULTS) }
  if (identical(DATA$A, DATA$B)) { return(RESULTS) }
