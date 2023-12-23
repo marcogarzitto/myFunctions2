@@ -72,7 +72,7 @@ my_paired_univariate <- function (dv, iv, void_string = '-', alpha_value = 0.050
   if (iv_classification == 'Continuous') { RESULTS <- my_paired_anova(y = iv, time = dv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction) }
   if (iv_classification == 'Poor continuous') { RESULTS <- my_paired_anova(y = iv, time = dv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction) }
   if (iv_classification == 'Dummy') { RESULTS <- my_paired_anova(y = iv, time = dv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction) }
-  if (iv_classification == 'Dichotomous') { RESULTS <- my_paired_chisquare(a = dv, b = iv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction) }
+  if (iv_classification == 'Dichotomous') { RESULTS <- my_paired_mcnemar(a = dv, b = iv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction) }
   if (iv_classification == 'Polytomous') { RESULTS <- my_paired_chisquare(a = dv, b = iv, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction) }
  }
  #

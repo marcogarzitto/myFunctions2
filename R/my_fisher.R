@@ -8,7 +8,7 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the Fisher's exact test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a).
+#' @return A list with results: 'test' (string, with results of the Fisher's exact test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
 #' @export
 my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
@@ -23,7 +23,7 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  if (direction == 'Increase') { direction = 'less' ; tails = 'one-tails' }
  if (direction == 'Decrease') { direction = 'greater' ; tails = 'one-tails' }
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  #
  DATA <- na.omit(data.frame(A = a, B = b))
  if (!is.factor(DATA$A)) { DATA$A <- ordered(DATA$A) }
@@ -114,7 +114,10 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  empty_levels <- paste(c(empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
  groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description)
+ groups_pairs <- groups_pairs
+ groups_pairs_p <- groups_pairs_p
+ #
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
  return(RESULTS)
 }
 

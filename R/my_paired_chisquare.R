@@ -1,6 +1,6 @@
-#' my_chisquare
+#' my_paired_chisquare
 #'
-#' Function to do a Chi-squared test using Fisher's exact test as alternative or completion.
+#' Function to do a Chi-squared test using McNemar test as alternative or completion.
 #'
 #' @param a Factor vector. Default: None.
 #' @param b Factor vector. Default: None.
@@ -11,7 +11,7 @@
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
 #' @return A list with results: 'test' (string, with results of the Chi-squared test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
 #' @export
-my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
+my_paired_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -40,7 +40,7 @@ my_chisquare <- function (a, b, void_string = '-', alpha_value = 0.050, multiple
  if (length(levels_input_all_a) == length(levels_input_drop_a)) { empty_levels_a <- 'All levels represented (1st-variable)' } else { empty_levels_a <- paste('Empy levels (excluded, 1st-variable)', ':', ' ', paste(levels_input_all_a[!(levels_input_all_a %in% levels_input_drop_a)], collapse = paste(',', ' ', sep = '')), sep = '') }
  if (length(levels_input_all_b) == length(levels_input_drop_b)) { empty_levels_b <- 'All levels represented (2nd-variable)' } else { empty_levels_b <- paste('Empy levels (excluded, 2nd-variable)', ':', ' ', paste(levels_input_all_b[!(levels_input_all_b %in% levels_input_drop_b)], collapse = paste(',', ' ', sep = '')), sep = '') }
  #
- if (wise & (length(levels(DATA$A)) == 2) & (length(levels(DATA$B)) == 2)) { return(my_fisher(a = a, b = b, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ if (wise & (length(levels(DATA$A)) == 2) & (length(levels(DATA$B)) == 2)) { return(my_paired_mcnemar(a = a, b = b, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  if ((length(levels(DATA$A)) < 2) | (length(levels(DATA$B)) < 2)) { return(RESULTS) }
  if (identical(DATA$A, DATA$B)) { return(RESULTS) }
