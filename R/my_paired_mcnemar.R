@@ -1,6 +1,6 @@
-#' my_fisher
+#' my_paired_mcnemar
 #'
-#' Function to do a Fisher's exact test.
+#' Function to do a McNemar's paired test.
 #'
 #' @param a Factor vector (with 2 levels). Default: None.
 #' @param b Factor vector (with 2 levels). Default: None.
@@ -8,16 +8,16 @@
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the Fisher's exact test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
+#' @return A list with results: 'test' (string, with results of the McNemar's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the time variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'times' (string, frequencies of levels of b by levels of a), 'times_pairs' (string, actually a void string), 'times_pairs_p' (string, actually a void string).
 #' @export
-my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
+my_paired_mcnemar <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
  significance <- void_string
  comparison <- void_string
  effect_size <- void_string
- groups_description <- void_string
+ times_description <- void_string
  groups_pairs <- void_string
  groups_pairs_p <- void_string
  #
@@ -25,7 +25,7 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
  if (direction == 'Increase') { test_direction = 'less' ; tails = 'one-tails' }
  if (direction == 'Decrease') { test_direction = 'greater' ; tails = 'one-tails' }
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  #
  DATA <- na.omit(data.frame(A = a, B = b))
  if (!is.factor(DATA$A)) { DATA$A <- ordered(DATA$A) }
@@ -99,7 +99,7 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
   effect_size <- paste(effect_size, ' ', '(', annotation, ')', sep = '')
  }
- groups_description <- paste(levels(DATA$A)[1], ':', ' ',
+ times_description <- paste(levels(DATA$A)[1], ':', ' ',
                              my_nice_percent(100 * length(DATA$A[(DATA$A == levels(DATA$A)[1]) & (DATA$B == levels(DATA$B)[1])]) / length(DATA$A[(DATA$A == levels(DATA$A)[1])]), decimals = 2, text = '', percent_sign = TRUE, per_level = '100', min_value = 0, max_value = 100, with_equal_sign = FALSE, with_sign = FALSE, void_string = void_string),
                              ' ', '(', levels(DATA$B)[1], ')',
                              ' ', 'and', ' ',
@@ -114,12 +114,12 @@ my_fisher <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_al
                              ' ', '(', levels(DATA$B)[2], ')',
                              sep = '')
  empty_levels <- paste(c(empty_levels_a, empty_levels_b), collapse = paste(';', ' ', sep = ''))
- groups_description <- paste(c(groups_description, empty_levels), collapse = paste(';', ' ', sep = ''))
+ times_description <- paste(c(times_description, empty_levels), collapse = paste(';', ' ', sep = ''))
  #
- groups_pairs <- groups_pairs
- groups_pairs_p <- groups_pairs_p
+ times_pairs <- times_pairs
+ times_pairs_p <- times_pairs_p
  #
- RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, groups = groups_description, groups_pairs = groups_pairs, groups_pairs_p = groups_pairs_p)
+ RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  return(RESULTS)
 }
 
