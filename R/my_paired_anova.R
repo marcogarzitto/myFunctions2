@@ -54,8 +54,8 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  if ((min(table(DATA$T)) < 3) | (min(table(!is.na(DATA$Y), DATA$T)) < 3) | (sd(DATA$Y) <= 0) | (is.na(sd(DATA$Y)))) { return(RESULTS) }
  #
  OUTLIERS_EXTREME <- DATA %>% dplyr::group_by(T) %>% rstatix::identify_outliers(Y)
-          OUTLIERS_EXTREME_N <- sum(OUTLIERS$is.extreme)
-          OUTLIERS_EXTREME_ANY <- TRUE %in% OUTLIERS$is.extreme
+          OUTLIERS_EXTREME_N <- sum(OUTLIERS_EXTREME$is.extreme)
+          OUTLIERS_EXTREME_ANY <- TRUE %in% OUTLIERS_EXTREME$is.extreme
  #
  NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(T) %>% rstatix::shapiro_test(Y)
                      NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
@@ -64,6 +64,8 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
             SPHERICITY<- SPHERICITY$"Mauchly's Test for Sphericity"
             SPHERICITY <- (SPHERICITY$p < 0.050)
  mauchly.test()
+ #
+ if (wise & NORMALITY_VIOLATION) { return(my_paired_friedman(y = y, time = time, observations = observations, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction)) }
  #
  
 
