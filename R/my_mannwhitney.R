@@ -2,8 +2,8 @@
 #'
 #' Function to do a betwee-subjects Mann-Whitney's test.
 #'
-#' @param y Numeric vector. Default: None.
-#' @param group Factor vector (with 2 levels). Default: None.
+#' @param y Numeric vector. Dependent variable (using wide format for data-frame). Default: None.
+#' @param group Factor vector (with 2 levels). Independent/Group variable (using wide format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).

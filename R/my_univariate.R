@@ -2,8 +2,8 @@
 #'
 #' Function to do an appropriate univariate between-subjects analysis (with two variable).
 #'
-#' @param dv Numeric vector. Default: None.
-#' @param iv Numeric vector. Default: None.
+#' @param dv Numeric/Factor vector. Dependent variable (using wide format for data-frame). Default: None.
+#' @param iv Numeric/Factor vector. Independent variable (using wide format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).

@@ -2,8 +2,9 @@
 #'
 #' Function to do a within-subjects Test t.
 #'
-#' @param y Numeric vector. Default: None.
-#' @param time Factor vector (with 2 levels). Default: None.
+#' @param y Numeric vector. Dependent variable (using long format for data-frame). Default: None.
+#' @param time Factor vector (with 2 levels). Independent/Time variable (using long format for data-frame). Default: None.
+#' @param observations Factor vector, with the observation identifier (using long format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
@@ -11,7 +12,7 @@
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
 #' @return A list with results: 'test' (string, with results of the within-subjects t-test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the time variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'times' (string, mean and SD for the levels of the time variable), 'times_pairs' (list of vectors, every vector reports two times corresponding to post-hoc comparisons), 'times_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).
 #' @export
-my_paired_ttest <- function (y, time, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
+my_paired_ttest <- function (y, time, observations, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -46,10 +47,13 @@ my_paired_ttest <- function (y, time, void_string = '-', alpha_value = 0.050, mu
  #
  LEVENE <- car::leveneTest(Y ~ T, data = DATA, center = median)
  #
- if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_mannwhitney(y = y, time = time, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(T) %>% rstatix::shapiro_test(Y)
+                     NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ #
+ if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_mannwhitney(y = y, time = time, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
-      if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }
+      if ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
  TEST <- t.test(Y ~ T, data = DATA, paired = TRUE, alternative = test_direction)
  #
  result <- paste(note,

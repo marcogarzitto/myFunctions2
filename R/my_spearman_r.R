@@ -2,8 +2,8 @@
 #'
 #' Function to do a Spearman's correlation.
 #'
-#' @param y Numeric vector. Default: None.
-#' @param x Numeric vector. Default: None.
+#' @param y Numeric vector. Dependent variable (using wide format for data-frame). Default: None.
+#' @param x Numeric vector. Independent variable (using wide format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).

@@ -2,8 +2,8 @@
 #'
 #' Function to do a betwee-subjects Test t.
 #'
-#' @param y Numeric vector. Default: None.
-#' @param group Factor vector (with 2 levels). Default: None.
+#' @param y Numeric vector. Dependent variable (using wide format for data-frame). Default: None.
+#' @param group Factor vector (with 2 levels). Independent/Group variable (using wide format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
@@ -46,10 +46,13 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
  #
- if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
+ NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(G) %>% rstatix::shapiro_test(Y)
+                     NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ #
+ if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
  #
  note <- ''
-      if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }
+      if ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
  TEST <- t.test(Y ~ G, data = DATA, alternative = test_direction)
  #
  result <- paste(note, 

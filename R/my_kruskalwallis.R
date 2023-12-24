@@ -2,15 +2,16 @@
 #'
 #' Function to do a Kruskal-Wallis' rank sum test.
 #'
-#' @param y Numeric vector. Default: None.
-#' @param group Factor vector. Default: None.
+#' @param y Numeric vector. Dependent variable (using wide format for data-frame). Default: None.
+#' @param group Factor vector. Independent/Group variable (using wide format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
+#' @param wise Boolean, if true, the most appropriate test is used according to the data. Default: TRUE
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
 #' @return A list with results: 'test' (string, with results of the Kruskal-Wallis' rank sum test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, mean and SD for the levels of the group variable), 'groups_pairs' (list of vectors, every vector reports two groups corresponding to post-hoc comparisons), 'groups_pairs_p' (vector of numeric, significances corresponding to post-hoc comparisons).
 #' @export
-my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
+my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), wise = TRUE, direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
@@ -36,6 +37,8 @@ my_kruskalwallis <- function (y, group, void_string = '-', alpha_value = 0.050, 
  if (length(levels_input_all) == length(levels_input_drop)) { empty_levels <- 'All levels represented' } else { empty_levels <- paste('Empy levels (excluded)', ':', ' ', paste(levels_input_all[!(levels_input_all %in% levels_input_drop)], collapse = paste(',', ' ', sep = '')), sep = '') }
  levels_new <- gsub('-', '§§§', levels_input_drop)
  levels(DATA$G) <- levels_new
+ #
+ if (wise & (length(levels(DATA$G)) == 2)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
  #
  if (length(levels(DATA$G)) < 2) { return(RESULTS) }
  #

@@ -2,8 +2,8 @@
 #'
 #' Function to do a one-way between-subjects ANOVA.
 #'
-#' @param y Numeric vector. Default: None.
-#' @param group Factor vector. Default: None.
+#' @param y Numeric vector. Dependent variable (using wide format for data-frame). Default: None.
+#' @param group Factor vector. Independent/Group variable (using wide format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
@@ -38,7 +38,7 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  levels_new <- gsub('-', '§§§', levels_input_drop)
  levels(DATA$G) <- levels_new
  #
- if (wise & (length(levels(DATA$G)) == 2)) { return(my_ttest(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
+ if (wise & (length(levels(DATA$G)) == 2)) { return(my_ttest(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction)) }
  #
  if (length(levels(DATA$G)) < 2) { return(RESULTS) }
  #
@@ -46,7 +46,7 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
  #
- if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_kruskalwallis(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
+ if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_kruskalwallis(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction)) }
  #
  note <- ''
       if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }

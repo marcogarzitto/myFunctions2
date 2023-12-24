@@ -2,15 +2,16 @@
 #'
 #' Function to do a McNemar's paired test.
 #'
-#' @param a Factor vector (with 2 levels). Default: None.
-#' @param b Factor vector (with 2 levels). Default: None.
+#' @param a Factor vector (with 2 levels). Dependent/Group variable (using long format for data-frame). Default: None.
+#' @param time Factor vector (with 2 levels). Dependent/Time variable (using long format for data-frame). Default: None.
+#' @param observations Factor vector, with the observation identifier (using long format for data-frame). Default: None.
 #' @param void_string String to be used if the number cannot be represented correctly. String. Default: '-'.
 #' @param alpha_value Statistical significance. Numeric value. Default: 0.050.
 #' @param multiple_alphas Numeric vector with three levels of statistical significance (for multiple asterisks). Numeric vector. Default: c(0.050, 0.010, 0.001).
 #' @param direction Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.
-#' @return A list with results: 'test' (string, with results of the McNemar's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the time variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'times' (string, frequencies of levels of b by levels of a), 'times_pairs' (string, actually a void string), 'times_pairs_p' (string, actually a void string).
+#' @return A list with results: 'test' (string, with results of the McNemar's test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the time variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'times' (string, frequencies of levels of time by levels of a), 'times_pairs' (string, actually a void string), 'times_pairs_p' (string, actually a void string).
 #' @export
-my_paired_mcnemar <- function (a, b, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
+my_paired_mcnemar <- function (a, time, observations, void_string = '-', alpha_value = 0.050, multiple_alphas = c(0.050, 0.010, 0.001), direction = 'Stable')
 {
  result <- void_string
  p_value <- 1.0
