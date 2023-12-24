@@ -60,20 +60,35 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(T) %>% rstatix::shapiro_test(Y)
                      NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
  #
- SPHERICITY <- rstatix::anova_test(data = DATA, dv = Y, wid = O, between = NULL, within = T, type = 3, effect.size = 'pes', detailed = TRUE)
+ SPHERICITY <- ez::ezANOVA(data = DATA, dv = Y, wid = O, within = T, between = NULL, type = 3, detailed = TRUE)
             SPHERICITY<- SPHERICITY$"Mauchly's Test for Sphericity"
             SPHERICITY <- (SPHERICITY$p < 0.050)
- mauchly.test()
  #
  if (wise & NORMALITY_VIOLATION) { return(my_paired_friedman(y = y, time = time, observations = observations, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction)) }
+ #
+ note <- ''
+      if (NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
+ #
+ ANOVA <- ez::ezANOVA(data = DATA, dv = Y, wid = O, within = T, between = NULL, type = 3, detailed = TRUE)
+ if (SPHERICITY)
+ {
+  ANOVA$ANOVA[2] <- ANOVA$'Sphericity Corrections'$'p[HF]'
+ }
+ ANOVA <- ANOVA$ANOVA
+ #
+ result <- paste(note, 
+                 'F','(', ANOVA$DFn[2], ',', ANOVA$DFd[2], ')', my_nice(ANOVA$F[2], decimals = 2, text = '', with_equal_sign = TRUE, with_sign = FALSE, min_value = -Inf, max_value = Inf, void_string = void_string), ',', ' ', 
+                 myFunctions::give_nice_p(ANOVA$p[2], decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
+                 sep = '')
+ #
+ p_value <- as.numeric(ANOVA$p[2])
+ if (p_value < alpha_value) { significance <- '*' }
  #
  
 
 
 
 
-ANOVA <- rstatix::anova_test(data = TEMP2, dv = value, wid = code, between = NULL, within = time, type = 3, effect.size = 'pes', detailed = TRUE)
-SPHERICITY  ; SPHERICITY <- (SPHERICITY$p < 0.050)
 
 
 
