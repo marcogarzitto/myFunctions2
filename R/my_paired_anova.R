@@ -127,7 +127,7 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  if (p_value < alpha_value)
  {
   ES <- effectsize::omega_squared(MODEL, partial = TRUE, alternative = test_direction, ci = 0.950, generalized = FALSE)
-  effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "Partial-\u03C9\u00B2", with_equal_sign = TRUE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
+  effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "\u03C9\u00B2\u209A", with_equal_sign = TRUE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$CI_low, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ',', ' ', my_nice(ES$CI_high, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
