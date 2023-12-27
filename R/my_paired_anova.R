@@ -68,8 +68,11 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  #
  note <- ''
       if (NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
+      if (OUTLIERS_EXTREME_ANY) { note <- paste(note, '!Extremeo-outliers: ', OUTLIERS_EXTREME_N,'! ', sep = '') }
+      if (SPHERICITY) { note <- paste(note, '!Sphericity-correction! ', sep = '') }
  #
  ANOVA <- ez::ezANOVA(data = DATA, dv = Y, wid = O, within = T, between = NULL, type = 3, detailed = TRUE)
+ MODEL <- nlme::lme(Y ~ T, data = DATA, random = ~1|O)
  if (SPHERICITY)
  {
   ANOVA$ANOVA[2] <- ANOVA$'Sphericity Corrections'$'p[HF]'
@@ -84,7 +87,61 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  p_value <- as.numeric(ANOVA$p[2])
  if (p_value < alpha_value) { significance <- '*' }
  #
- 
+ if (p_value < alpha_value)
+ {
+  POST <- MODEL
+       POST <- summary(multcomp::glht(POST, linfct = multcomp::mcp(T = 'Tukey')), test = multcomp::adjusted(type = 'bonferroni')) 
+       POST <- data.frame(n = names(POST$test$pvalues),
+                          d = POST$test$coefficients,
+                          p = POST$test$pvalues)
+  groups_pairs <- POST$n
+  groups_pairs_p <- POST$p
+  ROWS <- c()
+  for (ROW in row.names(POST))
+  {
+   SIGN <- '='
+   if (POST[ROW, c('p')] < 0.050)
+   {
+    if (POST[ROW, c('d')] < 0) { SIGN <- '<' }
+    if (POST[ROW, c('d')] > 0) { SIGN <- '>' }
+   } else { SIGN <- '=' }
+  ROW <- paste(gsub(' - ', paste(' ', SIGN, ' ', sep = ''), ROW),
+                    ' ', '(', my_nice_p(POST[ROW, c('p')], decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string), ')', sep = '')
+  ROW <- gsub('§§§', '-', ROW)
+  ROWS <- c(ROWS, ROW)
+  }
+  comparison <- paste(ROWS, collapse = paste(';', ' ', sep = ''))
+ } else
+ {
+  POST <- MODEL
+       POST <- summary(multcomp::glht(POST, linfct = multcomp::mcp(T = 'Tukey')), test = multcomp::adjusted(type = 'bonferroni')) 
+       POST <- data.frame(n = names(POST$test$pvalues),
+                          d = POST$test$coefficients,
+                          p = POST$test$pvalues)
+  groups_pairs <- POST$n
+  groups_pairs_p <- POST$p
+  comparison <- paste(levels(DATA$T), collapse = paste(' ', '=', ' ', sep = ''))
+ }
+ comparison <- gsub('§§§', '-', comparison)
+ #
+ if (p_value < alpha_value)
+ {
+  ES <- effectsize::omega_squared(MODEL, partial = TRUE, alternative = test_direction, ci = 0.950, generalized = FALSE)
+  effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "Partial-\u03C9\u00B2", with_equal_sign = TRUE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
+                       ' ', '[', my_nice(ES$CI_low, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
+                       ',', ' ', my_nice(ES$CI_high, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
+                       sep = '')
+  effect_size_interpretation <- ''
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2) <= 0.02)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.02) & (abs(ES$Omega2) <= 0.13)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.13) & (abs(ES$Omega2) <= 0.26)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.26)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+  effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
+ }
+
+
+
+
 
 
 

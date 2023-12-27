@@ -95,16 +95,16 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  #
  if (p_value < alpha_value)
  {
-  ES <- effectsize::omega_squared(TEST, partial = FALSE, alternative = test_direction, ci = 0.950)
-  effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "\u03C9\u00B2", with_equal_sign = TRUE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
-                       ' ', '[', my_nice(ES$CI_low, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string),
-                       ',', ' ', my_nice(ES$CI_high, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
+  ES <- effectsize::omega_squared(TEST, partial = TRUE, alternative = test_direction, generalized = FALSE, ci = 0.950)
+  effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "Partial-\u03C9\u00B2", with_equal_sign = TRUE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
+                       ' ', '[', my_nice(ES$CI_low, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
+                       ',', ' ', my_nice(ES$CI_high, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string), ']',
                        sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(ES$Omega2) & (abs(ES$Omega2) <= 0.01)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.01) & (abs(ES$Omega2) <= 0.06)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.06) & (abs(ES$Omega2) <= 0.14)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.14)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2) <= 0.02)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.02) & (abs(ES$Omega2) <= 0.13)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.13) & (abs(ES$Omega2) <= 0.26)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
+                             if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.26)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description  <- c()
