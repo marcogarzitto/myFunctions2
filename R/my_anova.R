@@ -107,6 +107,7 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
                              if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.26)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
+ #
  groups_description  <- c()
  for (level_a in levels(DATA$G))
  {

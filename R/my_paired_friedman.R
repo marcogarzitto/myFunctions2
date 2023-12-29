@@ -53,8 +53,15 @@ my_paired_friedman <- function (y, time, observations, void_string = '-', alpha_
  #
  if ((min(table(DATA$T)) < 3) | (min(table(!is.na(DATA$Y), DATA$T)) < 3) | (sd(DATA$Y) <= 0) | (is.na(sd(DATA$Y)))) { return(RESULTS) }
  #
- 
-
+ TEST <- rstatix::friedman_test(data = DATA, Y ~ T | O)
+ #
+ result <- paste('\u03C7\u00B2','(', TEST$df, ')', my_nice(TEST$statistic, decimals = 2, text = '', with_equal_sign = TRUE, with_sign = FALSE, min_value = -Inf, max_value = Inf, void_string = void_string), ',', ' ', 
+                 myFunctions::give_nice_p(TEST$p, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
+                 sep = '')
+ #
+ p_value <- as.numeric(TEST$p)
+ if (p_value < alpha_value) { significance <- '*' }
+ #
 
 
 

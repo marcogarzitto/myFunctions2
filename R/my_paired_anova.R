@@ -68,11 +68,11 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  #
  note <- ''
       if (NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
-      if (OUTLIERS_EXTREME_ANY) { note <- paste(note, '!Extremeo-outliers: ', OUTLIERS_EXTREME_N,'! ', sep = '') }
+      if (OUTLIERS_EXTREME_ANY) { note <- paste(note, '!Extreme-outliers: ', OUTLIERS_EXTREME_N,'! ', sep = '') }
       if (SPHERICITY) { note <- paste(note, '!Sphericity-correction! ', sep = '') }
  #
+ MODEL <- nlme::lme(Y ~ T, data = DATA, random = ~ 1 | O)
  ANOVA <- ez::ezANOVA(data = DATA, dv = Y, wid = O, within = T, between = NULL, type = 3, detailed = TRUE)
- MODEL <- nlme::lme(Y ~ T, data = DATA, random = ~1|O)
  if (SPHERICITY)
  {
   ANOVA$ANOVA[2] <- ANOVA$'Sphericity Corrections'$'p[HF]'
@@ -90,12 +90,12 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
  if (p_value < alpha_value)
  {
   POST <- MODEL
-       POST <- summary(multcomp::glht(POST, linfct = multcomp::mcp(T = 'Tukey')), test = multcomp::adjusted(type = 'bonferroni')) 
+       POST <- summary(multcomp::glht(POST, linfct = multcomp::mcp(T = 'Tukey')), test = multcomp::adjusted(type = 'bonferroni'))
        POST <- data.frame(n = names(POST$test$pvalues),
                           d = POST$test$coefficients,
                           p = POST$test$pvalues)
-  groups_pairs <- POST$n
-  groups_pairs_p <- POST$p
+  times_pairs <- POST$n
+  times_pairs_p <- POST$p
   ROWS <- c()
   for (ROW in row.names(POST))
   {
@@ -118,14 +118,16 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
        POST <- data.frame(n = names(POST$test$pvalues),
                           d = POST$test$coefficients,
                           p = POST$test$pvalues)
-  groups_pairs <- POST$n
-  groups_pairs_p <- POST$p
+  times_pairs <- POST$n
+  times_pairs_p <- POST$p
   comparison <- paste(levels(DATA$T), collapse = paste(' ', '=', ' ', sep = ''))
  }
  comparison <- gsub('§§§', '-', comparison)
  #
  if (p_value < alpha_value)
  {
+  # ANOVA$ges[2]
+  # ES <- effectsize::eta_squared(MODEL, partial = TRUE, alternative = test_direction, ci = 0.950, generalized = FALSE)
   ES <- effectsize::omega_squared(MODEL, partial = TRUE, alternative = test_direction, ci = 0.950, generalized = FALSE)
   effect_size <- paste(my_nice(ES$Omega2, decimals = 3, text = "\u03C9\u00B2\u209A", with_equal_sign = TRUE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
                        ' ', '[', my_nice(ES$CI_low, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string),
@@ -138,23 +140,22 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
                              if (!is.na(ES$Omega2) & (abs(ES$Omega2)  > 0.26)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
   effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ #
+ times_description  <- c()
+ for (level_a in levels(DATA$T))
+ {
+  inside_time <- as.data.frame(psych::describeBy(DATA$Y, DATA$T, mat = TRUE)[, c('group1', 'mean', 'sd')])
+  inside_time$group1 <- paste(inside_time$group1, ':', sep = '')
+  inside_time$mean <- sapply(inside_time$mean, my_nice, decimals = 2, text = '', with_equal_sign = FALSE, with_sign = TRUE, min_value = -1000, max_value = 1000, void_string = void_string)
+  inside_time$sd <- paste('\u00B1', sapply(inside_time$sd, my_nice, decimals = 3, text = '', with_equal_sign = FALSE, with_sign = FALSE, min_value = -1000, max_value = 1000, void_string = void_string), sep = '')
+  inside_time <- apply(inside_time, 1, paste, collapse = ' ')
+ }
+ times_description <- paste(inside_time, collapse = paste(' ', '-vs-', ' ', sep = ''))
+ times_description <- paste(c(times_description, empty_levels), collapse = paste(';', ' ', sep = ''))
+ times_description <- gsub('§§§', '-', times_description)
+ #
+ times_pairs <- strsplit(times_pairs, split = " - ")
+ times_pairs_p <- times_pairs_p
  #
  RESULTS <- list(test = result, p_value = p_value, significance = significance, comparison = comparison, es = effect_size, times = times_description, times_pairs = times_pairs, times_pairs_p = times_pairs_p)
  return(RESULTS)
