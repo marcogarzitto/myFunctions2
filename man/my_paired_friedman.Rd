@@ -7,6 +7,7 @@
 my_paired_friedman(
   y,
   time,
+  observations,
   void_string = "-",
   alpha_value = 0.05,
   multiple_alphas = c(0.05, 0.01, 0.001),
@@ -15,9 +16,11 @@ my_paired_friedman(
 )
 }
 \arguments{
-\item{y}{Numeric vector. Default: None.}
+\item{y}{Numeric vector. Dependent variable (using long format for data-frame). Default: None.}
 
-\item{time}{Factor vector. Default: None.}
+\item{time}{Factor vector. Independent/Time variable (using long format for data-frame). Default: None.}
+
+\item{observations}{Factor vector, with the observation identifier (using long format for data-frame). Default: None.}
 
 \item{void_string}{String to be used if the number cannot be represented correctly. String. Default: '-'.}
 

@@ -14,9 +14,9 @@ my_fisher(
 )
 }
 \arguments{
-\item{a}{Factor vector (with 2 levels). Default: None.}
+\item{a}{Factor vector (with 2 levels). Dependent/Group variable (using wide format for data-frame). Default: None.}
 
-\item{b}{Factor vector (with 2 levels). Default: None.}
+\item{b}{Factor vector (with 2 levels). Independent/Group variable (using wide format for data-frame). Default: None.}
 
 \item{void_string}{String to be used if the number cannot be represented correctly. String. Default: '-'.}
 

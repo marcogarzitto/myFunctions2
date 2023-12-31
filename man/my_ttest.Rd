@@ -15,9 +15,9 @@ my_ttest(
 )
 }
 \arguments{
-\item{y}{Numeric vector. Default: None.}
+\item{y}{Numeric vector. Dependent variable (using wide format for data-frame). Default: None.}
 
-\item{group}{Factor vector (with 2 levels). Default: None.}
+\item{group}{Factor vector (with 2 levels). Independent/Group variable (using wide format for data-frame). Default: None.}
 
 \item{void_string}{String to be used if the number cannot be represented correctly. String. Default: '-'.}
 

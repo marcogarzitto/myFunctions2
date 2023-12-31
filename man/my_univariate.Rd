@@ -15,9 +15,9 @@ my_univariate(
 )
 }
 \arguments{
-\item{dv}{Numeric vector. Default: None.}
+\item{dv}{Numeric/Factor vector. Dependent variable (using wide format for data-frame). Default: None.}
 
-\item{iv}{Numeric vector. Default: None.}
+\item{iv}{Numeric/Factor vector. Independent variable (using wide format for data-frame). Default: None.}
 
 \item{void_string}{String to be used if the number cannot be represented correctly. String. Default: '-'.}
 

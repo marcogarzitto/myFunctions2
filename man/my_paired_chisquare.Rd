@@ -6,7 +6,8 @@
 \usage{
 my_paired_chisquare(
   a,
-  b,
+  time,
+  observations,
   void_string = "-",
   alpha_value = 0.05,
   multiple_alphas = c(0.05, 0.01, 0.001),
@@ -15,9 +16,11 @@ my_paired_chisquare(
 )
 }
 \arguments{
-\item{a}{Factor vector. Default: None.}
+\item{a}{Factor vector. Dependent/Group variable (using long format for data-frame). Default: None.}
 
-\item{b}{Factor vector. Default: None.}
+\item{time}{Factor vector. Independent/Time variable (using long format for data-frame). Default: None.}
+
+\item{observations}{Factor vector, with the observation identifier (using long format for data-frame). Default: None.}
 
 \item{void_string}{String to be used if the number cannot be represented correctly. String. Default: '-'.}
 
@@ -30,7 +33,7 @@ my_paired_chisquare(
 \item{direction}{Specifying the alternative hypothesis (using: 'Stable', 'Increase', 'Decrease'). String. Default: 'Stable'.}
 }
 \value{
-A list with results: 'test' (string, with results of the Chi-squared test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of b by levels of a), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
+A list with results: 'test' (string, with results of the Chi-squared test), 'p_value' (numeric, the value of p associated with the test), 'significance' (string, with an asterisk for statistically significant results), 'comparison' (string, comparisons between levels of the group variable marked when the result is statistically significant), 'es' (string, effect-size for statistically significant results), 'groups' (string, frequencies of levels of time by levels of a), 'groups_pairs' (string, actually a void string), 'groups_pairs_p' (string, actually a void string).
 }
 \description{
 Function to do a Chi-squared test using McNemar test as alternative or completion.

@@ -15,9 +15,9 @@ my_chisquare(
 )
 }
 \arguments{
-\item{a}{Factor vector. Default: None.}
+\item{a}{Factor vector. Dependent/Group variable (using wide format for data-frame). Default: None.}
 
-\item{b}{Factor vector. Default: None.}
+\item{b}{Factor vector. Independent/Group variable (using wide format for data-frame). Default: None.}
 
 \item{void_string}{String to be used if the number cannot be represented correctly. String. Default: '-'.}
 
