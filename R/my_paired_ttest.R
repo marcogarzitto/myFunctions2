@@ -57,7 +57,7 @@ my_paired_ttest <- function (y, time, observations, void_string = '-', alpha_val
   NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
  }
  #
- if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_mannwhitney(y = y, time = time, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_paired_wilcoxon(y = y, time = time, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
       if ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
