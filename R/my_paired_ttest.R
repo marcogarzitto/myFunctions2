@@ -47,8 +47,15 @@ my_paired_ttest <- function (y, time, observations, void_string = '-', alpha_val
  #
  LEVENE <- car::leveneTest(Y ~ T, data = DATA, center = median)
  #
- NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(T) %>% rstatix::shapiro_test(Y)
-                     NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ NORMALITY_VIOLATION <- DATA %>% group_by(G) %>% summarise(sd = sd(Y))
+ if (TRUE %in% ((NORMALITY_VIOLATION$sd <= 0) | is.na(NORMALITY_VIOLATION$sd)))
+ {
+  NORMALITY_VIOLATION <- TRUE
+ } else
+ {
+  NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(G) %>% rstatix::shapiro_test(Y)
+  NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ }
  #
  if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_mannwhitney(y = y, time = time, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #

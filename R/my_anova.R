@@ -46,10 +46,20 @@ my_anova <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
  #
- if (wise & (LEVENE$'Pr(>F)'[1] < 0.050)) { return(my_kruskalwallis(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction)) }
+ NORMALITY_VIOLATION <- DATA %>% group_by(G) %>% summarise(sd = sd(Y))
+ if (TRUE %in% ((NORMALITY_VIOLATION$sd <= 0) | is.na(NORMALITY_VIOLATION$sd)))
+ {
+  NORMALITY_VIOLATION <- TRUE
+ } else
+ {
+  NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(G) %>% rstatix::shapiro_test(Y)
+  NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ }
+ #
+ if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_kruskalwallis(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, wise = wise, direction = direction)) }
  #
  note <- ''
-      if (LEVENE$'Pr(>F)'[1] < 0.050) { note <- '!not-applicable! ' }
+      if ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION) { note <- '!not-applicable! ' }
  #
  MOD <- lm(Y ~ G, data = DATA)
  TEST <- car::Anova(MOD, type = 'III')

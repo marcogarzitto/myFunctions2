@@ -46,8 +46,15 @@ my_ttest <- function (y, group, void_string = '-', alpha_value = 0.050, multiple
  #
  LEVENE <- car::leveneTest(Y ~ G, data = DATA, center = median)
  #
- NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(G) %>% rstatix::shapiro_test(Y)
-                     NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ NORMALITY_VIOLATION <- DATA %>% group_by(G) %>% summarise(sd = sd(Y))
+ if (TRUE %in% ((NORMALITY_VIOLATION$sd <= 0) | is.na(NORMALITY_VIOLATION$sd)))
+ {
+  NORMALITY_VIOLATION <- TRUE
+ } else
+ {
+  NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(G) %>% rstatix::shapiro_test(Y)
+  NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ }
  #
  if (wise & ((LEVENE$'Pr(>F)'[1] < 0.050) | NORMALITY_VIOLATION)) { return(my_mannwhitney(y = y, group = group, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas, direction = direction)) }
  #

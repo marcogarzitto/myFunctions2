@@ -57,8 +57,15 @@ my_paired_anova <- function (y, time, observations, void_string = '-', alpha_val
           OUTLIERS_EXTREME_N <- sum(OUTLIERS_EXTREME$is.extreme)
           OUTLIERS_EXTREME_ANY <- TRUE %in% OUTLIERS_EXTREME$is.extreme
  #
- NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(T) %>% rstatix::shapiro_test(Y)
-                     NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ NORMALITY_VIOLATION <- DATA %>% group_by(G) %>% summarise(sd = sd(Y))
+ if (TRUE %in% ((NORMALITY_VIOLATION$sd <= 0) | is.na(NORMALITY_VIOLATION$sd)))
+ {
+  NORMALITY_VIOLATION <- TRUE
+ } else
+ {
+  NORMALITY_VIOLATION <- DATA %>% dplyr::group_by(G) %>% rstatix::shapiro_test(Y)
+  NORMALITY_VIOLATION <- TRUE %in% (NORMALITY_VIOLATION$p < 0.050)
+ }
  #
  SPHERICITY <- ez::ezANOVA(data = DATA, dv = Y, wid = O, within = T, between = NULL, type = 3, detailed = TRUE)
             SPHERICITY<- SPHERICITY$"Mauchly's Test for Sphericity"
