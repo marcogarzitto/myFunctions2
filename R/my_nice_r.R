@@ -12,6 +12,8 @@
 #' @export
 my_nice_r <- function (value, decimals = 3, with_r = TRUE, spearman = FALSE, with_equal_sign = FALSE, void_string = '-')
 {
+ if (is.na(value) | !is.numeric(value) | is.infinite(value)) { return(my_nice(text = text, value = value)) }
+ #
  if (with_r)
  {
   if (spearman)

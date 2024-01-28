@@ -17,6 +17,8 @@
 #' @export
 my_nice_z <- function (value, decimals = 3, text = '', standard_mean = 0, standard_sd = 1, min_z = -5, max_z = 5, with_equal_sign = FALSE, with_sign = TRUE, void_string = '-')
 {
+ if (is.na(value) | !is.numeric(value) | is.infinite(value)) { return(my_nice(text = text, value = value)) }
+ #
  if (text != '')
  {
   with_equal_sign <- TRUE

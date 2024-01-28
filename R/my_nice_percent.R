@@ -20,6 +20,9 @@ my_nice_percent <- function (value, decimals = 1, text = '', percent_sign = TRUE
  {
   with_equal_sign <- TRUE
  }
+ #
+ if (is.na(value) | !is.numeric(value) | is.infinite(value)) { return(my_nice(text = text, value = value)) }
+ #
  if (percent_sign)
  {
   if (per_level == '100') { percent_sign <- '\u0025' } # per cent

@@ -14,6 +14,8 @@
 #' @export
 my_nice_t <- function (value, decimals = 2, text = 'T', min_value = 0, max_value = 100, with_equal_sign = FALSE, with_sign = FALSE, void_string = '-')
 {
+ if (is.na(value) | !is.numeric(value) | is.infinite(value)) { return(my_nice(text = text, value = value)) }
+ #
  if (text != '')
  {
   with_equal_sign <- TRUE

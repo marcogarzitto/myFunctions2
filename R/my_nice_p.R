@@ -26,6 +26,8 @@ my_nice_p <- function (value, decimals = 3, with_p = TRUE, with_equal_sign = FAL
   text <- ''
  }
  #
+ if (is.na(value) | !is.numeric(value) | is.infinite(value)) { return(my_nice(text = text, value = value)) }
+ #
  if (with_stars & !multiple_stars & (value < alpha))
  {
   stars <- '*'

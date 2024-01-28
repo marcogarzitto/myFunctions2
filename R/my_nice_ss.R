@@ -14,6 +14,8 @@
 #' @export
 my_nice_ss <- function (value, decimals = 1, text = 'SS', min_value = 25, max_value = 175, with_equal_sign = FALSE, with_sign = FALSE, void_string = '-')
 {
+ if (is.na(value) | !is.numeric(value) | is.infinite(value)) { return(my_nice(text = text, value = value)) }
+ #
  if (text != '')
  {
   with_equal_sign <- TRUE
