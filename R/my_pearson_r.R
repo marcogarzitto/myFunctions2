@@ -35,7 +35,7 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
  if (dim(DATA)[1] <= 3) { return(RESULTS) }
  if (identical(DATA$Y, DATA$X)) { return(RESULTS) }
  #
- if (wise & (shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { return(my_spearman_r(y = y, x = x, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
+ if (wise & (shapiro.test(DATA$Y)[2] < 0.050) | (wise & shapiro.test(DATA$X)[2] < 0.050)) { return(my_spearman_r(y = y, x = x, void_string = void_string, alpha_value = alpha_value, multiple_alphas = multiple_alphas)) }
  #
  note <- ''
       if ((shapiro.test(DATA$Y)[2] < 0.050) | (shapiro.test(DATA$X)[2] < 0.050)) { note <- '!not-applicable! ' }
@@ -45,7 +45,8 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
                  my_nice_r(value = TEST$estimate, decimals = 3, with_r = TRUE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string),
                  ' ', '[', my_nice_r(value = TEST$conf.int[1], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string),
                  ',', ' ', my_nice_r(value = TEST$conf.int[2], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string), ']',
-                 ' ', '(', tails, ')', ',', ' ',
+                 ', ',
+                 # ' ', '(', tails, ')', ',', ' ',
                  my_nice_p(value = TEST$p.value, decimals = 3, with_p = TRUE, with_equal_sign = FALSE, with_stars = TRUE, multiple_stars = TRUE, alpha = alpha_value, multiple_alphas = multiple_alphas, give_only_stars = FALSE, void_string = void_string),
                  sep = '')
  #
@@ -68,10 +69,10 @@ my_pearson_r <- function (y, x, void_string = '-', alpha_value = 0.050, multiple
                  ',', ' ', my_nice_r(value = TEST$conf.int[2], decimals = 3, with_r = FALSE, spearman = FALSE, with_equal_sign = FALSE, void_string = void_string), ']',
                  sep = '')
   effect_size_interpretation <- ''
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate) <= 0.1)) { effect_size_interpretation <- paste(',', ' ', 'negligible effect', sep = '') }
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.1) & (abs(TEST$estimate) <= 0.3)) { effect_size_interpretation <- paste(',', ' ', 'small effect', sep = '') }
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.3) & (abs(TEST$estimate) <= 0.7)) { effect_size_interpretation <- paste(',', ' ', 'moderate effect', sep = '') }
-                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.7)) { effect_size_interpretation <- paste(',', ' ', 'large effect', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate) <= 0.1)) { effect_size_interpretation <- paste(',', ' ', 'negligible', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.1) & (abs(TEST$estimate) <= 0.3)) { effect_size_interpretation <- paste(',', ' ', 'small', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.3) & (abs(TEST$estimate) <= 0.7)) { effect_size_interpretation <- paste(',', ' ', 'moderate', sep = '') }
+                             if (!is.na(TEST$estimate) & (abs(TEST$estimate)  > 0.7)) { effect_size_interpretation <- paste(',', ' ', 'large', sep = '') }
                              effect_size <- paste(effect_size, effect_size_interpretation, sep = '')
  }
  groups_description <- void_string
