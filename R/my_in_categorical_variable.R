@@ -43,7 +43,7 @@ my_in_categorical_variable <- function (name_in, df_in = IN, levels_in = c(), le
  #
  levels_out <- unique(levels_out)
  #
- if (length(levels_out) > 1)
+ if (length(levels_out) > 2)
  {
   contrasts(OUT$out) <- contr.treatment(length(levels_out), base = 1)
   for (enne in c(1:length(levels(OUT$out))))
